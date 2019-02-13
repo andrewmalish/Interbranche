@@ -1,0 +1,346 @@
+<?php
+/** @var  $block Lucid\Booking\Block\NewCheckout\LastStep */
+$item = $block->getItem();
+$customerData = $block->getCustomer7pathInfo();
+$customerSessionData = $block->getCustomerSessionInfo();
+$customerEp1Data = $block->getCustomerEp1Data();
+$isWebsiteBooked = $block->checkIsWebsiteBooked();
+$datum = isset($customerEp1Data['picked_date']) ? $customerEp1Data['picked_date'] : '';
+$priceRow = 0;
+$isCouponBlocked = $block->checkIsCouponDayBlocked($datum);
+$datum = $block->formatBlockDate($datum);
+$tax = 0;
+$quote = $block->getCurrentQuote();
+$priceTotal = 0;
+$paypalexpress = $block->getPaypalExpressUrl();
+$terms = $block->getTerms();
+
+
+if ($item) {
+    $priceRow = $item->getPrice();
+    $tax = $item->getTaxAmount();
+    $priceTotal = $item->getBasePriceInclTax();
+} else {
+    echo 'no needed data';
+    die('false');
+}
+?>
+
+<div class="tab-container active step6">
+
+    <div class="tab-content">
+        <div class="block-title italic primary h1">Hier findest du deine Buchungs&shy;zusammenfassung</div>
+
+        <?php if (!empty($customerData)):
+            $ttx_font = $block->getViewFileUrl('Lucid_Booking::assets/fonts/font2.png');
+            ?>
+            <input type="hidden" id="ttx_font_new" value="<?= $ttx_font ?>"/>
+            <h3 class="">Dein Motiv <span style="color:#f1f1f1">-<?=$item->getProductId();?></span></h3>
+            <div class="checkout-canvas">
+                <canvas id="converted" width="400" height="300"></canvas>
+            </div>
+            <input type="hidden" id="orderid" value="order_<?= $quote->getReservedOrderId() ?>"/>
+        <?php endif; ?>
+
+        <?php if($isWebsiteBooked): ?>
+            <p clsas="error" style="color:#f17480"> <br /><?= __('Sorry, but you are not able to book website for this day, please select another Day!')?></p>
+        <?php endif; ?>
+
+        <div class="result-row">
+            <div class="col-3 col-m-12">
+                <h3 class="">Datum</h3>
+                <p><?php echo $datum ?></p>
+
+            </div>
+            <div class="col-3 col-m-12">
+                <h3 class="">Sender</h3>
+                <p><?php echo $sender = isset($customerEp1Data['websiteTitle']) ? $customerEp1Data['websiteTitle'] : '' ?></p>
+            </div>
+            <div class="col-3 col-m-12">
+                <h3 class="">Seite</h3>
+                <p><?php echo $seite = isset($customerEp1Data['subpage']) ? $customerEp1Data['subpage'] : '' ?></p>
+            </div>
+
+        </div>
+        <div class="dataLayer"
+             data-product-Sku="<?= $item->getSku() ?>"
+             data-product-Name="<?= $item->getName() ?>"
+             data-product-Price="<?php echo $priceTotal; ?>"
+             data-product-AttributeSetId="4"
+             data-product-Category="<?php //$_product->getCategory()->getName()?>"
+             data-product-Position="1"
+             style="display:none;"
+        ></div>
+
+        <div class="result-row">
+            <h3 class=""> Benachrichtigung</h3>
+            <?php
+            if (isset($customerEp1Data['smscontent']) && $customerEp1Data['sms_email'] !== 'no_email') {
+                if ($customerEp1Data['sms_email']=='sms') { ?>
+                    <p>Tag/Uhrzeit: <?php echo $customerEp1Data['datum']?>/<?php echo $customerEp1Data['uhrzeit'] ?> Uhr</p>
+                    <p>Rufnummer: <?php echo $customerEp1Data['ruffnummer'] ?></p>
+                    <p><?php echo $customerEp1Data['smscontent'] ?></p>
+
+                    <?php
+                }
+                else { ?>
+                    <p>Tag/Uhrzeit: <?php echo $customerEp1Data['datum'] ?>/<?php echo $customerEp1Data['uhrzeit'] ?> Uhr</p>
+                    <p>E-Mail: <?php echo $customerEp1Data['email_to'] ?></p>
+                    <p><?php echo $customerEp1Data['smscontent']  ?></p>
+                <?php }
+            }
+            else {
+                echo "<p>Keine Benachrichtigung</p>";
+            }
+            ?>
+        </div>
+
+        <div class="result-row">
+            <h3 class="">Zahlungsmethode</h3>
+            <div class="paypal-logo"></div>
+        </div>
+
+        <div class="result-row">
+            <h3 class="">Gutscheincode</h3>
+            <input name="coupon" type="text" <?= ($isCouponBlocked) ? 'disabled' : '' ?> />
+            <?php if (!$isWebsiteBooked): ?>
+            <button id="coupon" class="action primary" <?= ($isCouponBlocked) ? 'disabled' : '' ?> >Gutschein einlösen
+                <?php endif; ?>
+            </button>
+        </div>
+
+        <div class="result-row">
+            <h3 class="">Rechnungsbetrag</h3>
+            <ul>
+                <li class="subtotal"> Preis:<span><?php echo $block->formatPrice($priceRow) ?> €</span></li>
+                <li class="tax">19.0% MwSt:<span><?php echo $block->formatPrice($tax); ?> €</span></li>
+                <li class="total"> Summe:<span><?php echo $block->formatPrice($priceTotal) ?> €</span></li>
+            </ul>
+        </div>
+
+        <div class="result-row">
+            <div class="col-2">
+                <?php if ($terms):
+
+                    /** Don't show widerruf if booked in advance more than 14 days ***/
+                    foreach ($terms as $term):
+                        if ($term->getName() === 'Widerrufsbelehrung') {
+                            continue;
+                        }
+
+                        ?>
+                        <input type="checkbox" id="<?= $term->getName() ?>" class="required"
+                               name=" <?= $term->getName() ?>"
+                               value=" <?= $term->getName() ?>"/>
+                        <label for="<?= $term->getName() ?>">
+                            <span class="show-term"><?= $term->getCheckboxText() ?></span>
+                            <div class="term-content"><?php echo $term->getContent(); ?> <span class="x"></span></div>
+                        </label>
+
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+            <div class="col-2">
+                <input type="checkbox" id="newsletter" name="subscribe"
+                       value="newsletter"/>
+                <label for="newsletter"> Newsletter</label>
+            </div>
+        </div>
+
+        <div class="tocart-form">
+            <form data-role="tocart-form" action="<?php echo $paypalexpress; ?>" id="add-to-cart" method="post">
+                <?php echo $block->getBlockHtml('formkey') ?>
+                <p style="color:#333"><?php echo __('Es gelten unsere ') ?><a style="text-decoration:underline"
+                                                                              href="/datenschutzbestimmungen"
+                                                                              style="display: block; margin: 0 0 10px;"
+                                                                              target="_blank"><?php echo __('Datenschutzbestimmungen') ?></a>
+                </p>
+                <?php if (!$isWebsiteBooked): ?>
+                    <button type="submit" title="Go To Checkout" class="action tocart primary" disabled>
+                        <span>Jetzt kostenpflichtig bestellen!</span>
+                    </button>
+                <?php endif; ?>
+                <div class="buttons-container">
+                    <?php $backLink = $customerSessionData['back_refferer_url'].'?auth=true'; ?>
+                    <button type="button" onclick="location.href='<?=$backLink?>'"
+                            class="button prev secondary"><span><?php echo __('zurück') ?></span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="overflow"></div>
+<div style="display:none" class="debug info"> <?php $block->showSessionData(); ?> </div>
+
+
+<script type="text/javascript">
+    requirejs(['jquery', 'interbranche'], function ($, inter) {
+
+
+        /***Checking Terms ***/
+        $('.button.prev.secondary').submit(function (e) {
+            e.stopPropagation();
+            location.href='<?=$backLink?>';
+            console.log('test');
+            return;
+        });
+        /***Checking Terms ***/
+        $('#add-to-cart').submit(function (e) {
+            e.stopPropagation();
+
+            if ($('#newsletter').prop('checked') == true) {
+                console.log('add To Newsletter');
+                subscribeUrl = '/booking/index/auth/action/subscribe/';
+                $.ajax({
+                    method: "POST",
+                    url: subscribeUrl
+                });
+            }
+            return validateFields();
+
+        });
+
+        $('.show-term').click(function () {
+            $(this).next('.term-content').addClass('active');
+            $('.overflow').addClass('active');
+        });
+
+        $('.overflow').click(function () {
+            $('.term-content, .overflow').removeClass('active');
+        });
+
+
+        <?php if(!$isCouponBlocked): ?>
+        /****Apply Coupon ***/
+        $('#coupon').click(function (el) {
+
+            var ajaxUrl = '/booking/index/newcheckout/';
+            var coupon = $('input[name="coupon"]');
+
+            $.ajax({
+                method: "POST",
+                url: ajaxUrl,
+                data: {
+                    coupon: coupon.val()
+                }
+
+            }).done(function (data) {
+
+                if (data) {
+                    var $result = jQuery.parseJSON(data);
+                    if ($result.status == 'fail') {
+                        $('.wrong_code').remove();
+                        coupon.addClass('error').removeClass('success').before('<span class="wrong_code">Dieser Rabat Code ist falsch. Bitte geben Sie einen richtigen Code ein</span>');
+                        coupon.next().removeClass('success');
+                        $('.discount').hide();
+                        $('li.tax span').text($result.tax + ' €');
+                        $('li.total span').text($result.total + ' €');
+                    }
+                    else if ($result.status == 'ok') {
+
+                        if ($result.discount) {
+                            coupon.removeClass('error').addClass('success').prev('span').remove();
+                            coupon.next().addClass('success');
+
+                            if ($result.successUrl) {
+                                $('form#add-to-cart').attr('action', $result.successUrl);
+                                $('.paypal-logo').hide().after('<p>Gutschein</p>');
+                            }
+
+                            $('.discount').remove();
+                            $('li.total').before('<li class="discount">– Rabatt:<span>' + $result.discount + ' €</span></li>');
+                            $('li.tax span').text($result.tax + ' €');
+                            $('li.total span').text($result.total + ' €');
+                        }
+                    }
+                }
+
+            }).fail(function ($error) {
+                console.log($error);
+                console.log('fail');
+            });
+        });
+
+        <?php endif; ?>
+
+        function validateFields() {
+            var $valid = true;
+            $('input[type="checkbox"].required').each(function () {
+                if ($(this).prop('checked') !== true) {
+                    $(this).next().addClass('error');
+                    $valid = false;
+                    return false;
+                }
+                else {
+                    $(this).next().removeClass('error');
+                }
+
+            });
+            return $valid;
+        }
+
+
+        jQuery(document).ready(function () {
+            dataLayerProduct();
+        });
+
+
+        function dataLayerProduct() {
+
+
+            var virtualPageURL = '/order/step6';
+            var virtualPageTitle = 'Order Step 6 – Zusammenfassung';
+            var el = jQuery('.dataLayer');
+
+
+            var products = new Array();
+            var sku = el.data('product-sku');
+            var name = el.data('product-name');
+            var price = el.data('product-price');
+            var attributeSetId = el.data('product-attributesetid');
+            var category = el.data('product-category');
+            var position = el.data('product-position');
+            var path = 'Motive > ' + name;
+
+            products.push({
+                "id": sku,
+                "name": name,
+                "price": price,
+                "attribute_set_id": attributeSetId,
+                "category": category,
+                "position": position,
+                "path": path,
+                "quantity": 1
+            });
+
+            var layerObject ={
+                "event": "VirtualPageview",
+                "virtualPageURL": virtualPageURL,
+                "virtualPageTitle": virtualPageTitle,
+            }
+
+            var layerObject2 = {
+                "event": "checkout",
+                "ecommerce": {
+                    "checkout": {
+                        "actionField": {
+                            "step": 6
+                        },
+
+                        "products": products
+
+                    }
+
+                }
+
+            };
+
+            window.dataLayer.push(layerObject);
+            window.dataLayer.push(layerObject2);
+        }
+
+
+    });
+
+</script>

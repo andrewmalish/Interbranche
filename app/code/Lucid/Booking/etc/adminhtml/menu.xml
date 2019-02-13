@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+	<menu>
+		<add id="Lucid::top_level" module="Lucid_Booking" resource="Magento_Backend::content" sortOrder="9999" title="Kalender"/>
+		<!--<add action="lucid_booking/produkt/index" id="Lucid::lucid_booking_produkt" module="Lucid_Booking" parent="Lucid::top_level" resource="Magento_Backend::content" sortOrder="9999" title="Produkt"/>-->
+		<add action="lucid_booking/calendar/index" id="Lucid::lucid_booking_calendar" module="Lucid_Booking" parent="Lucid::top_level" resource="Magento_Backend::content" sortOrder="9999" title="Kalender"/>
+		<add action="lucid_booking/booked/index" id="Lucid::lucid_booking_booked" module="Lucid_Booking" parent="Lucid::top_level" resource="Magento_Backend::content" sortOrder="9999" title="Gebuchte Seiten"/>
+	</menu>
+</config>

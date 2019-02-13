@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+	<acl>
+		<resources>
+			<resource id="Magento_Backend::admin">
+				<!--<resource id="Lucid_Booking::Produkt" sortOrder="10" title="Produkt">-->
+					<!--<resource id="Lucid_Booking::Produkt_save" sortOrder="10" title="Save Produkt"/>-->
+					<!--<resource id="Lucid_Booking::Produkt_delete" sortOrder="20" title="Delete Produkt"/>-->
+					<!--<resource id="Lucid_Booking::Produkt_update" sortOrder="30" title="Update Produkt"/>-->
+					<!--<resource id="Lucid_Booking::Produkt_view" sortOrder="40" title="View Produkt"/>-->
+				<!--</resource>-->
+				<resource id="Lucid_Booking::Calendar" sortOrder="10" title="Calendar">
+					<resource id="Lucid_Booking::Calendar_save" sortOrder="10" title="Save Calendar"/>
+					<resource id="Lucid_Booking::Calendar_delete" sortOrder="20" title="Delete Calendar"/>
+					<resource id="Lucid_Booking::Calendar_update" sortOrder="30" title="Update Calendar"/>
+					<resource id="Lucid_Booking::Calendar_view" sortOrder="40" title="View Calendar"/>
+				</resource>
+
+
+				<resource id="Lucid_Booking::booking" title="Oauth Config" sortOrder="55">
+					<resource id="Lucid_Booking::book" title="Oauth" sortOrder="10"/>
+				</resource>
+				<resource id="Magento_Backend::stores">
+					<resource id="Magento_Backend::stores_settings">
+						<resource id="Magento_Config::config">
+							<resource id="Lucid_Booking::booking_config" title="Oauth Config"/>
+						</resource>
+					</resource>
+				</resource>
+
+			</resource>
+		</resources>
+	</acl>
+</config>
+

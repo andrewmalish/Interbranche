@@ -1,0 +1,31 @@
+<div class="block-title italic primary h1">
+	<?php echo __('BITTE GIB HIER DEINEN WUNSCHTEXT EIN:')?>
+</div>
+<div class="product-container fields">
+	<div class="field">
+		<label class="label" for="title">Anrede</label>
+		<input type="text" name="title" placeholder="<?php echo __('z.B. Liebe Oma Irmgard.')?>"/>
+	</div>
+
+	<div class="field">
+		<label class="label" for="text"><?php echo __('Wunschtext')?></label>
+		<textarea name="text" placeholder="<?php echo __('z.B. alles nur erdenklich Gute zu Deinem Geburtstag! Bleib genau so wie Du bist!.')?>"></textarea>
+	</div>
+	<div class="field">
+		<label class="label" for="sender"><?php echo __('Absender')?></label>
+		<input type="text" name="sender" placeholder="<?php echo __('z.B. Dein Enkel Daniel.')?>"/>
+	</div>
+</div>
+<div class="picure-container">
+	<?php /** @var $block \Magento\Catalog\Block\Product\Image */ ?>
+
+	<img class="photo image"
+		<?= /* @escapeNotVerified */ $block->getCustomAttributes() ?>
+		 src="<?= /* @escapeNotVerified */ $block->getImageUrl() ?>"
+		 width="<?= /* @escapeNotVerified */ $block->getWidth() ?>"
+		 height="<?= /* @escapeNotVerified */ $block->getHeight() ?>"
+		 alt="<?= /* @escapeNotVerified */ $block->stripTags($block->getLabel(), null, true) ?>" />
+	<?php
+	//echo $this->getLayout()->createBlock("Magento\Catalog\Block\Product\Image")->setTemplate("Magento_Catalog::category/image.phtml")->toHtml();
+	?>
+</div>

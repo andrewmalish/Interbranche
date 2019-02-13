@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-2columns-left" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="order_additional_info">
+            <block class="Lucid\Booking\Block\Adminhtml\Order\View\Ep1Data" name="sales_order_view_ep1data" after="order_items" template="order/view/ep1data.phtml" />
+        </referenceBlock>
+
+        <!--<referenceBlock name="content">-->
+            <!--<block class="Lucid\Booking\Block\Adminhtml\Order\View\Ep1Data" name="sales_order_view_ep1data" after="order_items" template="order/view/ep1data.phtml" />-->
+        <!--</referenceBlock>-->
+
+        <referenceContainer name="js">
+            <block class="Lucid\Booking\Block\Adminhtml\Order\View\Ep1Data" template="Lucid_Booking::order/view/ep1_data_js.phtml" name="ep1_data_js.js"/>
+        </referenceContainer>
+    </body>
+</page>

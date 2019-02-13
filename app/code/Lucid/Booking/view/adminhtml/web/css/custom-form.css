@@ -1,0 +1,86 @@
+body .websites-fieldset {
+        border:none;
+}
+.calendar-fieldset {
+        border: 0;
+        padding:0;
+}
+.calendar-select {width:320px; float:left; overflow:hidden;}
+.calendar-select #datepicker_custom{width:300px; overflow:hidden;}
+.calendar-fields {
+        float:left;
+        width:1000px;
+        margin-top:25px;
+}
+.calendar-fields label {
+        font-weight: 600;
+        width:15%; text-align: right;
+        float:left;
+        padding:7px 0 0 0;
+}
+.calendar-fields input[type="text"] {
+        width: 70%;
+        margin-left:2%;
+        float:left;
+        -webkit-appearance: none;
+        background-color: #fff;
+        border: 1px solid #adadad;
+        border-radius: 1px;
+        box-shadow: none;
+        color: #303030;
+        font-size: 1.4rem;
+        font-weight: 400;
+        height: auto;
+        line-height: 1.36;
+        padding: .6rem 1rem .6rem;
+        transition: border-color .1s linear;
+        vertical-align: baseline;
+}
+.calendar-fields input[type="checkbox"] {
+        width: 20px;
+        height:20px;
+        line-height: 1.36;
+        margin:7px 0 0 2%;
+        background-color: #fff;
+        border: 1px solid #adadad;
+}
+.calendar-fields button {
+        float: right;
+        clear: both;
+        margin: 30px 130px 0 0;
+        padding:10px 20px;
+}
+p {
+        width:100%;
+        float:left;
+        margin:10px 0;
+}
+
+td.highlight {
+}
+td.highlight > a {
+        background: #d6671a !important;
+        color: #fff!important;
+}
+
+.calendar-select .ui-datepicker:before{display:none}
+.websites-fieldset .websites {border:1px solid #f0f0f0; padding:2%; margin:1% 0;}
+
+.delete {
+        font-size: 18px;
+        padding: 5px 7px;
+        color: #d6671a;
+        font-weight: 600;
+        cursor: pointer;
+}
+.delete:hover {
+        opacity: 0.8;
+}
+.removed {
+        border:1px solid red !important;
+}
+
+div[data-index="Days"],
+div[data-index="DaysTo"] {
+        display:none;
+}

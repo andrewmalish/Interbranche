@@ -1,0 +1,238 @@
+<?php
+/** @var  $block \Lucid\Booking\Block\Order\Edit */
+
+
+$text = $block->getStep1();
+$product = $block->getProduct();
+$order = $block->getCustomerOrder();
+$customer = $block->getCustomerData();
+$ttx_font = $block->getViewFileUrl('Lucid_Booking::assets/fonts/font2.png');
+
+?>
+
+<div class="booking">
+    <form id="step-container" name="step-container" method="POST">
+        <div class='step-container'>
+            <div class="tab-container active ?>"  data-virtualPageURL="/order/edit" data-virtualPageTitle="Order Edit – Motiv wählen" >
+                <div class="block-title italic primary h1">
+                    <?php echo __('BITTE GIB HIER DEINEN WUNSCHTEXT EIN:') ?>
+                </div>
+
+                <div class="product-container fields">
+                    <span class="error"> </span>
+                    <?php if ($product->getData('ep1_anrede_text')): ?>
+                        <div class="field">
+                            <label class="label" for="title"><?php echo __('Textfeld 1') ?></label>
+                            <div class="error-ep1">
+                                <div class="edit-order">
+                                    Deine Bestellung muss angepasst werden:
+                                    <?php
+                                    $comments = $order->getStatusHistoryCollection();
+                                    $i=0;
+                                    foreach($comments as $comment){
+
+                                        if (strpos( $comment->getComment(), 'Transaktions') !== false) {
+                                            continue;
+                                        }
+                                        if($i>0) echo '<span style="red">,</span>';
+                                        echo ' <span style="color: red">' . $comment->getComment() . '</span>';
+                                        $i++;
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+                            <?php
+                            $xlim = $product->getData('ep1_anrede_x_interval') ? $product->getData('ep1_anrede_x_interval') : 1;
+                            $ylim = $product->getData('ep1_anrede_y_interval') ? $product->getData('ep1_anrede_y_interval') : 1;
+                            $anrWidth = $xlim * $ylim;
+                            ?>
+                            <textarea id="ttx_title" onkeyup="limitTextarea(this,<?= $ylim ?>,<?= $xlim ?>)"
+                                      cols="<?= $xlim ?>" rows="<?= $ylim ?>" maxlength="<?= $anrWidth ?>" name="text"
+                                      placeholder="<?php echo __('z.B. Liebe Oma Irmgard.') ?>"><?php echo isset($text->text) ? $text->text : '' ?></textarea>
+                            <input type="hidden" name="ep1_anr_x"
+                                   value="<?php echo $product->getData('ep1_anrede_x') ?>"/>
+                            <input type="hidden" name="ep1_anr_y"
+                                   value="<?php echo $product->getData('ep1_anrede_y') ?>"/>
+                            <input type="hidden" name="ep1_anr_x_interval"
+                                   value="<?php echo $product->getData('ep1_anrede_x_interval') ?>"/>
+                            <input type="hidden" name="ep1_anr_y_interval"
+                                   value="<?php echo $product->getData('ep1_anrede_y_interval') ?>"/>
+                        </div>
+                    <?php endif; ?>
+                    <?php if ($product->getData('ep1_wunsch_text')):
+
+                        $xlim = $product->getData('ep1_wunsch_x_interval') ? $product->getData('ep1_wunsch_x_interval') : 1;
+                        $ylim = $product->getData('ep1_wunsch_y_interval') ? $product->getData('ep1_wunsch_y_interval') : 1;
+                        $wunschWidth = $xlim * $ylim; ?>
+                        <div class="field">
+                            <label class="label" for="text"><?php echo __('Textfeld 2') ?></label>
+                            <textarea id="ttx_text"
+                                      onkeyup="limitTextarea(this,<?= $ylim ?>,<?= $xlim ?>)"
+                                      cols="<?= $xlim ?>" rows="<?= $ylim ?>"
+                                      name="text2" maxlength="<?= $wunschWidth ?>"
+                                      placeholder="<?php echo __('z.B. alles nur erdenklich Gute zu Deinem Geburtstag! Bleib genau so wie Du bist!.') ?>"><?php echo isset($text->text2) ? $text->text2 : '' ?></textarea>
+                            <input type="hidden" name="ep1_wun_x"
+                                   value="<?php echo $product->getData('ep1_wunsch_x') ?>"/>
+                            <input type="hidden" name="ep1_wun_y"
+                                   value="<?php echo $product->getData('ep1_wunsch_y') ?>"/>
+                            <input type="hidden" name="ep1_wun_x_interval"
+                                   value="<?php echo $product->getData('ep1_wunsch_x_interval') ?>"/>
+                            <input type="hidden" name="ep1_wun_y_interval"
+                                   value="<?php echo $product->getData('ep1_wunsch_y_interval') ?>"/>
+                        </div>
+                    <?php endif; ?>
+                    <?php if ($product->getData('ep1_absend_text')):
+                        $xlim = $product->getData('ep1_absend_x_interval') ? $product->getData('ep1_absend_x_interval') : 1;
+                        $ylim = $product->getData('ep1_absend_y_interval') ? $product->getData('ep1_absend_y_interval') : 1;
+                        $absendWidth = $xlim * $ylim;
+                        ?>
+                        <div class="field">
+                            <label class="label" for="sender"><?php echo __('Textfeld 3') ?></label>
+                            <textarea id="ttx_sender"
+                                      onkeyup="limitTextarea(this,<?= $ylim ?>,<?= $xlim ?>)"
+                                      cols="<?= $xlim ?>" rows="<?= $ylim ?>"
+                                      maxlength="<?= $absendWidth ?>" name="text3"
+                                      placeholder="<?php echo __('z.B. Dein Enkel Daniel.') ?>"><?php echo isset($text->text3) ? $text->text3 :  '' ?></textarea>
+                            <input type="hidden" name="ep1_abs_x"
+                                   value="<?php echo $product->getData('ep1_absend_x') ?>"/>
+                            <input type="hidden" name="ep1_abs_y"
+                                   value="<?php echo $product->getData('ep1_absend_y') ?>"/>
+                            <input type="hidden" name="ep1_abs_x_interval"
+                                   value="<?php echo $product->getData('ep1_absend_x_interval') ?>"/>
+                            <input type="hidden" name="ep1_abs_y_interval"
+                                   value="<?php echo $product->getData('ep1_absend_y_interval') ?>"/>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <div class="picure-container">
+
+                    <input type="hidden" id="ttx_font" value="<?= $ttx_font ?>"/>
+                    <input type="hidden" id="product_id" name="product_id" value="<?= $product->getId() ?>"/>
+                    <input type="hidden" id="orderid" name="orderid" value="<?= $order->getIncrementId() ?>"/>
+
+                    <canvas class="<?= $product->getIsPremium() ? 'premium' : '' ?>" id="ttx" width="400" height="300"></canvas>
+                </div>
+            </div>
+
+    </form>
+</div>
+
+
+<div class="buttons-container">
+    <a href="/customer/account/ " class="button secondary"><span><?php echo __('zurück') ?></span></a>
+    <button type="button" class="button edit primary"><?php echo __('speichem') ?></button>
+    <?php ?>
+</div>
+
+</div>
+
+
+<script type="text/javascript">
+    requirejs(['jquery', 'jquery/ui', 'interbranche'], function () {
+
+        jQuery(document).ready(function () {
+            dataLayerProduct();
+        });
+
+        function dataLayerProduct(){
+
+            var el = jQuery('.tab-container.active');
+//            console.log(el);
+            var event = "VirtualPageview";
+            var virtualPageURL = el.data('virtualpageurl');
+            var virtualPageTitle = el.data('virtualpagetitle');
+
+            var layerObject = {
+                "event": event,
+                "virtualPageURL": virtualPageURL,
+                "virtualPageTitle": virtualPageTitle
+            };
+
+            window.dataLayer.push(layerObject);
+//            console.log(layerObject);
+        }
+
+
+    });
+
+    function showLoader(el){ el.addClass('loader'); }
+    function hideLoader(el){ el.removeClass('loader'); }
+    function limitTextarea(textarea, maxLines, maxChar) {
+
+        var lines = textarea.value.replace(/\r/g, '').split('\n'), lines_removed, char_removed, i, char,pos= 0,j;
+        var cursorPosition=textarea.selectionEnd;
+        if (maxLines && lines.length > maxLines) {
+            lines = lines.slice(0, maxLines);
+            lines_removed = 1
+        }
+        if (maxChar) {
+            i = lines.length;
+            while (i-- > 0) if (lines[i].length > maxChar) {
+                if (lines[i].length > maxChar) {
+                    char=lines[i].slice(-1);
+                    lines[i] = lines[i].slice(0, maxChar);
+                    if((i+1)<maxLines){
+                        lines[i]+='\r';
+                        if((i+1)==lines.length){
+                            lines.push(char);
+                        }
+                        else{
+                            if(lines[i+1].length<=maxChar){
+                                lines[i + 1] = char + lines[i + 1];
+                            }
+                        }
+                        for(j=0;j<=i;j++){
+                            pos+=lines[j].length+1;
+                            if((pos-1)==cursorPosition){
+                                cursorPosition++;
+                            }
+                        }
+                    }
+                    char_removed = 1
+                }
+
+                if (char_removed || lines_removed) {
+                    textarea.value = lines.join('\n');
+                    textarea.focus();
+                    textarea.selectionEnd=cursorPosition;
+                }
+            }
+        }
+
+</script>
+
+<style>
+    ul.items.order-links {
+        display:none;
+    }
+    .error-ep1 {
+        /*width:100%;*/
+        overflow:hidden;
+        border: 2px solid #f8f8f8;
+    }
+    .edit-order {
+        /*width:540px;*/
+        padding:15px;
+        border:none;
+        text-align: left;
+        /*margin:0 auto 25px;*/
+    }
+    .edit-order p{
+        margin:5px 0;
+        padding:0;
+    }
+
+    .module-border-wrap {
+        width:100%;
+        padding: 1rem;
+        position: relative;
+        background: linear-gradient(to top right,#f17480, #1800fe);
+        padding: 5px;
+    }
+
+    .module {
+        background: white;
+        padding: 1rem;
+    }
+</style>
+

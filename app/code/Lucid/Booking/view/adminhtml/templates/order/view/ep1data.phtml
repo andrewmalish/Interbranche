@@ -1,0 +1,122 @@
+<?php
+
+/**
+ * $block Lucid\Booking\Block\Adminhtml\Order\View\Ep1Data\
+ *
+ */
+
+$image = '';
+try {
+    $customerData = $block->getCustomerData();
+    $step1 = $block->getStep1();
+    $step2 = $block->getStep2();
+    $step3 = $block->getStep3();
+    $step4 = $block->getStep4();
+
+    $ep1Url = $block->getEp1Url();
+
+    if(!empty($step4)){
+        $image = isset($step4->tmpImage) ? $ep1Url . $step4->tmpImage.'.png' : '';
+    }
+}
+catch(\Exception $e) {
+    echo('error - ' . $e);
+}
+
+?>
+
+
+<section class="admin__page-section">
+    <div class="admin__page-section-title">
+        <span class="title">Bestellung</span>
+    </div>
+    <div class="admin__table-wrapper">
+
+        <div class="data-col">
+            <h3>Kunden 7Pass</h3>
+            <?php if(isset($customerData)): ?>
+                <p>Vorname - <?php echo isset($customerData->first_name) ? $customerData->first_name : '' ?></p>
+                <p>Nachname - <?php echo isset($customerData->last_name) ? $customerData->last_name : '' ?></p>
+                <p>Geschlecht - <?php echo isset($customerData->gender) ? $customerData->gender : '' ?></p>
+                <p>E-Mail - <?php echo isset($customerData->email) ? $customerData->email : '' ?></p>
+                <p>Geburtsdatum - <?php echo isset($customerData->birthdate) ? $customerData->birthdate : '' ?></p>
+                <p>Sprache - <?php echo isset($customerData->preferred_language) ? $customerData->preferred_language : ''  ?></p>
+            <?php else: echo 'Keine Kundendaten vorhanden'; endif; ?>
+        </div>
+
+        <div class="data-col" style="width:50%">
+            <h3>Motiv</h3>
+                <?php if(!empty($image)): ?>
+                <img src="<?= $image ?>" alt="item Image" />
+                <?php endif; ?>
+
+        </div>
+    </div>
+</section>
+<section class="admin__page-section">
+    <div class="admin__page-section-title">
+        <span class="title"></span>
+    </div>
+    <div class="admin__table-wrapper" >
+        <div class="data-col">
+            <h3>Grußbotschaft</h3>
+            <?php if (isset($step1) && !empty($step1)): ?>
+                <p>Textfeld 1: <?php echo isset($step1->text) ? $step1->text : '' ?></p>
+                <p>Textfeld 2: <?php echo isset($step1->text2) ? $step1->text2 : '' ?></p>
+                <p>Textfeld 3: <?php echo isset($step1->text3) ? $step1->text3 : '' ?></p>
+            <?php else: echo 'kein Eintrag gefunden - Step 1'; endif; ?>
+        </div>
+
+        <div class="data-col">
+            <h3>Daten</h3>
+            <?php if (isset($step2) && !empty($step2)): ?>
+                <p>Preis EUR: <?php echo isset($step2->price) ? $step2->price : '' ?></p>
+                <p>Datum: <?php echo isset($step2->date) ? $block->formatBlockDate($step2->date) : ''  ?></p>
+                <p>Sender: <?php echo isset($step2->website) ? $step2->website : '' ?></p>
+                <p>Seite: <?php echo isset($step2->subpage) ? $step2->subpage : '' ?></p>
+            <?php else: echo 'kein Eintrag gefunden - Step 2'; endif; ?>
+        </div>
+
+        <div class="data-col">
+            <h3>Benachrichtigung</h3>
+            <?php //var_dump($step3);die; ?>
+            <?php if (isset($step3) && !empty($step3)): ?>
+                <?php $sms_text = isset($step3->sms_text) ? $step3->sms_text : ''; ?>
+
+	            <?php $number_label = (isset($step3->sms_phone) && !empty($step3->sms_phone)) ?  __('SMS Nummer:') : __('SMS Nummer:'); ?>
+	            <?php $number_label = $block->getEp1Data()->getData('sending_status')=='success' ? __('Digami Nummer:') : $number_label; ?>
+
+                <?php if (isset($step3->sms_phone) && !empty($step3->sms_phone)): ?>
+                    <p><?=$number_label?> <?= $step3->sms_phone ?></p>
+                    <p>SMS Text: <?= $sms_text ?></p>
+                <?php elseif (isset($step3->ruffnummer) && !empty($step3->ruffnummer)): ?>
+                    <p><?=$number_label?> <?= $step3->ruffnummer ?></p>
+                    <p>SMS Text: <?= $sms_text ?></p>
+                <?php elseif (isset($step3->email_to) && !empty($step3->email_to)): ?>
+                    <p>E-Mail an: <?= $step3->email_to ?></p>
+                    <p>E-Mail Text: <?= $sms_text ?></p>
+                    <?php else: echo 'Es wurde keine Benachrichtigung ausgewählt'; endif; ?>
+            <?php else: echo 'kein Eintrag gefunden'; endif; ?>
+        </div>
+
+
+    </div>
+</section>
+
+
+<style>
+    .data-col {
+        width: 25%;
+        float:left;
+        padding: 0 1%;
+        border-left:1px solid #f0f0f0;
+        min-height:200px;
+    }
+    .data-col:first-child {
+        padding-left:0;
+        border-left:0;
+    }
+    .data-col ul{
+        padding-left:30px;
+    }
+</style>

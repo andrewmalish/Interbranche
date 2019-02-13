@@ -1,0 +1,52 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: andrew
+ * Date: 14.06.18
+ * Time: 0:25
+ */
+
+$day = ''
+
+?>
+
+<fieldset class="calendar-fieldset">
+
+    <div class="calendar">
+
+        <div class="fieldset-wrapper-title">
+            <strong class="title"><span>Manage Calendar</span></strong>
+        </div>
+        <div class="calendar-select">
+            <div id="datepicker_custom"></div>
+        </div>
+
+        <div class="calendar-fields">
+            <p>
+                <label class="admin__field-label"><span>Manage Day</span> </label>
+                <input name="date_field" class="website_enable" type="text" value=""/>
+            </p>
+
+            <div class="edit-day">
+
+                <p>
+                    <label>Disable Day </label>
+                    <input name="day_enable" class="day_enable" <?= ($day) ? 'checked' : '' ?> type="checkbox" value="1"/>
+                </p>
+                <p>
+                    <label>Basis preis </label>
+                    <input name="basis_price" class="website" type="text" value=""/>
+                </p>
+                <p>
+                    <label>Premium preis </label>
+                    <input name="premium_price" class="website" type="text" value=""/>
+                </p>
+            </div>
+            <button id="updateDaySettings" class="save_day save primary ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">Update day settings</button>
+        </div>
+
+
+</fieldset>
+
+
+

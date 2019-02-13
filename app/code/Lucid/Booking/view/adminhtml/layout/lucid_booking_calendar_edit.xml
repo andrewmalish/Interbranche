@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+	<update handle="styles"/>
+	<head>
+		<css src="Lucid_Booking::css/custom-form.css"/>
+		<!--<link src="Lucid_Booking::js/custom-fields.js"/>-->
+	</head>
+	<body>
+		<referenceContainer name="content">
+			<uiComponent name="lucid_booking_calendar_form"/>
+			<block class="Lucid\Booking\Block\Adminhtml\Calendar\DynamicWebsite" name="manage.calendar" template="Lucid_Booking::calendar/manage-calendar.phtml" />
+			<block class="Lucid\Booking\Block\Adminhtml\Calendar\DynamicWebsite" name="calendar.edit" template="Lucid_Booking::calendar/infinity-fields.phtml" />
+		</referenceContainer>
+		<referenceContainer name="js">
+			<block class="Lucid\Booking\Block\Adminhtml\Calendar\Edit\Urls" template="Lucid_Booking::calendar/js.phtml" name="calendar.js"/>
+		</referenceContainer>
+	</body>
+</page>

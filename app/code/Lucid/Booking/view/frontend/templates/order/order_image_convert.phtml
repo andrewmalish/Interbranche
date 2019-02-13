@@ -1,0 +1,72 @@
+<?php
+/** @var $block Lucid\Booking\Block\Order\ImageConvert */
+
+$ttx_font = $block->getViewFileUrl('Lucid_Booking::assets/fonts/font2.png');
+$orders = count($block->getOrdersEp1Data());
+echo $totalPages = $block->getLastPage();
+?>
+
+<h1 class="page-title"><?= __('Convert canvas <span class="current-converted">0</span> of ') . $orders . __(' orders')?></h1>
+<h1 class="page-title load"><?= __('Generate images <span class="current-saved">0</span> from ') . $orders . __(' canvases')?></h1>
+<input type="hidden" id="ttx_font" value="<?= $ttx_font ?>"/>
+<div class="ep1_container">
+    <?php if ($orders > 0) :
+        foreach ($block->getOrdersEp1Data() as $order):
+            ?>
+    <div>
+            <canvas id="order_<?= $order->getOrderId() ?>" width="400" height="300"></canvas>
+            <span> For Order Id # <?= $order->getOrderId() ?> </span><br/>
+            <a href="javascript:void(0)" class="singleItem" data-canvas-id="order_<?= $order->getOrderId() ?>">re-Generate this</a>
+    </div>
+            <?php
+        endforeach;
+
+    endif;
+
+    ?>
+</div>
+
+<script type="text/javascript">
+
+    requirejs(['jquery', 'ordergenerate'], function ($) {
+
+    });
+</script>
+
+<style>
+    .page-header,
+    .header-brands,
+    footer,
+    .footer-text {
+        display: none;
+    }
+
+    canvas {
+        border: 1px solid blueviolet;
+    }
+
+    #maincontent {
+        max-width: 100%;
+    }
+    .complete {
+        color: green;
+    }
+    .page-title{
+        width: 450px;
+        margin: 15px auto;
+    }
+    .ep1_container{
+        display:flex;
+        flex-wrap: wrap;
+    }
+    .ep1_container div {
+        overflow:hidden;
+        margin-bottom:10px;
+        width: 25%;
+    }
+    .ep1_container div span{
+        width:100%;
+        float:left;
+    }
+</style>
+

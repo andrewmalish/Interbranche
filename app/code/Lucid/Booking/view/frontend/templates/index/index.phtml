@@ -1,0 +1,1101 @@
+<?php
+/** @var  $block \Lucid\Booking\Block\Index\Produkt */
+
+//$calendar = $block->getCalendar();
+$calendar = $block->getLastCalendar();
+$customerEp1Session = $block->getCustomerEp1Session();
+$dayInAdvance = $calendar->getDaysInAdvance() ? $calendar->getDaysInAdvance() : 3;
+$startDate = $block->getStartDay($dayInAdvance, $calendar->getDays());
+$websites = $block->getDynamicWebsites($startDate);
+$product = $block->getProduct();
+$customerData = $block->getCustomerSessionInfo();
+$customer = $block->getCustomerData();
+$billing = $customer->getDefaultBillingAddress();
+//$disabledDays = $block->getCalendarDisabledDays();
+$ttx_font = $block->getViewFileUrl('Lucid_Booking::assets/fonts/font2.png');
+$spec_price = $block->currentDayPrice($startDate);
+$tab_success='';
+
+?>
+
+<div class="booking">
+    <ul class="tabs">
+        <li class="tab <?= $block->getIsAuth() ? 'success' : 'active' ?>">1. <span
+                    class="text"><?php echo __('Motiv wählen') ?></span></li>
+        <li class="tab <?= $block->getIsAuth() ? 'success' : '' ?>">2. <span class="text" style="text-transform:capitalize"><?php echo __('GRUß BUCHEN') ?></span></li>
+        <li class="tab <?= $block->getIsAuth() ? 'success' : '' ?>">3. <span class="text"><?php echo __('Empfänger informieren') ?></span></li>
+        <li class="tab <?= $block->getIsAuth() ? 'active' : '' ?>">4. <span
+                    class="text"><?php echo __('Gemeinsam freuen!') ?></span></li>
+        <li class="tab" style='display:none;'>5. <span class="text"> Final lap</span></li>
+    </ul>
+
+    <form id="step-container" name="step-container" method="POST">
+        <div class='step-container'>
+            <div class="tab-container <?= $block->getIsAuth() ? '' : 'active' ?>" data-step="1"  data-virtualPageURL="/order/step1" data-virtualPageTitle="Order Step 1 – Motiv wählen" data-button1="TextfeldvorClick" data-button2="TextfeldzurückClick">
+                <div class="block-title italic primary h1">
+                    <?php echo __('BITTE GIB HIER DEINEN WUNSCHTEXT EIN:') ?>
+                </div>
+                <div class="product-container fields">
+                    <span class="error"> </span>
+                    <?php if ($product->getData('ep1_anrede_text')): ?>
+                        <div class="field">
+                            <label class="label" for="title"><?php echo __('Textfeld 1') ?></label>
+                            <?php
+                            $xlim = $product->getData('ep1_anrede_x_interval') ? $product->getData('ep1_anrede_x_interval') : 1;
+                            $ylim = $product->getData('ep1_anrede_y_interval') ? $product->getData('ep1_anrede_y_interval') : 1;
+                            $anrWidth = $xlim * $ylim;
+                            ?>
+                            <textarea id="ttx_title" onkeyup="limitTextarea(this,<?= $ylim ?>,<?= $xlim ?>)"
+                                      cols="<?= $xlim ?>" rows="<?= $ylim ?>" maxlength="<?= $anrWidth ?>" name="text"
+                                      placeholder="<?php echo __('z.B. Liebe Oma Irmgard.') ?>"><?php echo isset($customerEp1Session['text']) ? $customerEp1Session['text'] : $product->getData('ep1_anrede_text') ?></textarea>
+                            <input type="hidden" name="ep1_anr_x"
+                                   value="<?php echo $product->getData('ep1_anrede_x') ?>"/>
+                            <input type="hidden" name="ep1_anr_y"
+                                   value="<?php echo $product->getData('ep1_anrede_y') ?>"/>
+                            <input type="hidden" name="ep1_anr_x_interval"
+                                   value="<?php echo $product->getData('ep1_anrede_x_interval') ?>"/>
+                            <input type="hidden" name="ep1_anr_y_interval"
+                                   value="<?php echo $product->getData('ep1_anrede_y_interval') ?>"/>
+                        </div>
+                    <?php endif; ?>
+                    <?php if ($product->getData('ep1_wunsch_text')):
+
+                        $xlim = $product->getData('ep1_wunsch_x_interval') ? $product->getData('ep1_wunsch_x_interval') : 1;
+                        $ylim = $product->getData('ep1_wunsch_y_interval') ? $product->getData('ep1_wunsch_y_interval') : 1;
+                        $wunschWidth = $xlim * $ylim; ?>
+                        <div class="field">
+                            <label class="label" for="text"><?php echo __('Textfeld 2') ?></label>
+                            <textarea id="ttx_text"
+                                      onkeyup="limitTextarea(this,<?= $ylim ?>,<?= $xlim ?>)"
+                                      cols="<?= $xlim ?>" rows="<?= $ylim ?>"
+                                      name="text2" maxlength="<?= $wunschWidth ?>"
+                                      placeholder="<?php echo __('z.B. alles nur erdenklich Gute zu Deinem Geburtstag! Bleib genau so wie Du bist!.') ?>"><?php echo isset($customerEp1Session['text2']) ? $customerEp1Session['text2'] : $product->getData('ep1_wunsch_text') ?></textarea>
+                            <input type="hidden" name="ep1_wun_x"
+                                   value="<?php echo $product->getData('ep1_wunsch_x') ?>"/>
+                            <input type="hidden" name="ep1_wun_y"
+                                   value="<?php echo $product->getData('ep1_wunsch_y') ?>"/>
+                            <input type="hidden" name="ep1_wun_x_interval"
+                                   value="<?php echo $product->getData('ep1_wunsch_x_interval') ?>"/>
+                            <input type="hidden" name="ep1_wun_y_interval"
+                                   value="<?php echo $product->getData('ep1_wunsch_y_interval') ?>"/>
+                        </div>
+                    <?php endif; ?>
+                    <?php if ($product->getData('ep1_absend_text')):
+                        $xlim = $product->getData('ep1_absend_x_interval') ? $product->getData('ep1_absend_x_interval') : 1;
+                        $ylim = $product->getData('ep1_absend_y_interval') ? $product->getData('ep1_absend_y_interval') : 1;
+                        $absendWidth = $xlim * $ylim;
+                        ?>
+                        <div class="field">
+                            <label class="label" for="sender"><?php echo __('Textfeld 3') ?></label>
+                            <textarea id="ttx_sender"
+                                      onkeyup="limitTextarea(this,<?= $ylim ?>,<?= $xlim ?>)"
+                                      cols="<?= $xlim ?>" rows="<?= $ylim ?>"
+                                      maxlength="<?= $absendWidth ?>" name="text3"
+                                      placeholder="<?php echo __('z.B. Dein Enkel Daniel.') ?>"><?php echo isset($customerEp1Session['text3']) ? $customerEp1Session['text3'] :  $product->getData('ep1_absend_text') ?></textarea>
+                            <input type="hidden" name="ep1_abs_x"
+                                   value="<?php echo $product->getData('ep1_absend_x') ?>"/>
+                            <input type="hidden" name="ep1_abs_y"
+                                   value="<?php echo $product->getData('ep1_absend_y') ?>"/>
+                            <input type="hidden" name="ep1_abs_x_interval"
+                                   value="<?php echo $product->getData('ep1_absend_x_interval') ?>"/>
+                            <input type="hidden" name="ep1_abs_y_interval"
+                                   value="<?php echo $product->getData('ep1_absend_y_interval') ?>"/>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <div class="picure-container">
+
+                    <input type="hidden" id="ttx_font" value="<?= $ttx_font ?>"/>
+                    <input type="hidden" id="product_id" name="product_id" value="<?= $product->getId() ?>"/>
+                    <canvas class="<?= $product->getIsPremium() ? 'premium' : '' ?>" id="ttx" width="400" height="300"></canvas>
+                </div>
+
+            </div>
+            <div class="tab-container"  data-virtualPageURL="/order/step2" data-step="2" data-virtualPageTitle="Order Step 2 – Gruss buchen" data-button1="KalendervorClick" data-button2="KalenderzurückClick">
+                <div class="block-title italic primary h1">
+                    <?php echo __('BITTE GIB HIER DEINE BUCHUNGSDETAILS AN:') ?>
+                </div>
+                <div class="tab-content">
+                    <div class="h3 italic accent" style="margin-bottom: 15px;">VERFÜGBARES PAKET</div>
+                    <div class="price-block <?= $product->getIsPremium() ? 'premium' : '' ?>">
+                        <?php
+                        if(!empty($spec_price)){
+                            $price = $product->getIsPremium() ? $spec_price['premium_price'] : $spec_price['basis_price'];
+                        }
+                        else {
+                            $price = $product->getIsPremium() ? $calendar->getPrice2() : $calendar->getPrice1();
+                        }
+                        $def_price = $product->getIsPremium() ? $calendar->getPrice2() : $calendar->getPrice1();
+                        $price = $customerEp1Session['calendar_price'] ? $customerEp1Session['calendar_price'] : $price;
+                        ?>
+                        <input type="radio" id="price" name="price" checked value="<?php echo $price; ?>"/>
+                        <input type="hidden" id="calendar_price" name="calendar_price" value="<?php echo $price; ?>"/>
+                        <input type="hidden" id="calendar_default_price" name="calendar_default_price" value="<?php echo $def_price; ?>"/>
+                        <label for="price"> 1 Tag - <span><?php echo $price; ?></span>€</label>
+                    </div>
+
+                    <?php
+                    $catName = 'Motive';
+                    $categoryArr = $product->getCategoryIds();
+                    if(is_array($categoryArr)) {
+
+                        $_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                        $category = $_objectManager->create('Magento\Catalog\Model\Category')
+                            ->load(end($categoryArr));
+                        $catName = $category->getName();
+                    }
+                    ?>
+                    <div class="dataLayer"
+                         data-product-Sku="<?=$product->getId()?>"
+                         data-product-Name="<?=$product->getName()?>"
+                         data-product-Price="<?php echo $price; ?>"
+                         data-product-AttributeSetId="<?=$product->getAttributeSetId()?>"
+                         data-product-Category="<?php echo $catName ?>"
+                         data-product-Position="1"
+                         style="display:none;"
+                    ></div>
+
+                    <div id="datepicker"></div>
+                    <input type="hidden" name="picked_date"
+                           value="<?php echo isset($customerEp1Session['picked_date']) ? $customerEp1Session['picked_date'] : $startDate ?>"
+                           class="picked_date"/>
+
+
+                    <div class="h3 italic accent" style="margin-bottom: 15px;">
+                        VERFÜGBARE SENDER WÄHLEN
+                    </div>
+                    <div class="website-container">
+                        <div style="margin-bottom: 50px" class="website-list">
+
+                            <?php if ($websites):
+                            $i = 1;
+                            foreach ($websites as $website => $subpage):
+                            $disabled = '';
+                            if($subpage === 'disabled') {
+                                $disabled = $subpage;
+                            }
+                            ?>
+                            <div class="website-subpages">
+                                <input type="radio"
+                                       class="website required" <?= ($i == 1) ? 'checked' : '' ?>
+                                       id="website<?= $i ?>" name="website"
+                                       value="<?php echo $website.'_'.$subpage ?>"
+                                    <?= $disabled ?>
+                                       required
+                                       class="<?php echo (isset($customerEp1Session['website']) && $website == $customerEp1Session['website']) ? 'selected' : '' ?>" >
+                                <label for="website<?= $i ?>"><?php echo $website ?> </label>
+                            </div>
+                            <?php if( $i % 4 == 0) { ?>
+                        </div>
+                        <div style="margin-bottom: 50px" class="website-list">
+                            <?php
+                            }
+                            $i++;
+                            endforeach;
+                            endif;
+                            ?>
+                        </div>
+                        <input type="hidden" name="website_title" value=""/>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-container step3"  data-virtualPageURL="/order/step3" data-step="3" data-virtualPageTitle="Order Step 3 – Empfänger informieren" data-button1="EmpfängerzurückClick" data-button2="EmpfängerzurückClick">
+                <div class="block-title italic primary h1">
+                    <?php echo __('WIE WILLST DU DEN EMPFÄNGER BENACHRICHTIGEN?') ?>
+                </div>
+                <div class="tab-content">
+                    <div class="row-block select-block">
+                        <div class="col-3">
+                            <input type="radio" id="sms" name="sms_email"
+                                   value="sms"/>
+                            <label for="sms"> SMS</label>
+                        </div>
+                        <div class="col-3">
+                            <input type="radio" id="email" name="sms_email" checked
+                                   value="email"/>
+                            <label for="email"> E-Mail</label>
+                        </div>
+                        <div class="col-3 mobile-wide">
+                            <input type="radio" id="no_email" name="sms_email"
+                                   value="no_email"/>
+                            <label for="no_email"> Keine Benachrichtigung</label>
+                        </div>
+                    </div>
+                    <div class="row-block">
+                        <div class="col-2">
+                            <label class="label" for="datum">Datum</label>
+                            <input id="datum" type="text" name="datum" class="required"
+                                   value="<?php echo isset($customerEp1Session['picked_date']) ? $block->formatBlockDate($customerEp1Session['picked_date']) : $block->formatBlockDate($startDate) ?>"
+                                   placeholder="<?php echo __('z. B. 12.05.2018') ?>"/>
+                        </div>
+                        <div class="col-2">
+                            <label class="label" for="uhrzeit">Uhrzeit</label>
+                            <select name="uhrzeit" id="uhrzeit">
+                                <?php for ($i = 0; $i < 24; $i++) {
+                                    $time = $i . ':00';
+                                    echo '<option value="' . $time . '">' . $time . '</option>';
+                                } ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row-block email-row">
+                        <label class="label" for="email_to">E-Mail Adresse</label>
+                        <input id="email_to" type="text" name="email_to" class="required email"
+                               value="<?php echo isset($customerEp1Session['email_to']) ? $customerEp1Session['email_to'] : '' ?>"
+                               placeholder="<?php echo __('z. B.. hallo@dein-gruss.de') ?>"/>
+                    </div>
+
+                    <div class="row-block sms-row" style="display:none;">
+                        <div class="col-2">
+                            <label class="label" for="landesvorwahi">Landesvorwahl</label>
+                            <input id="landesvorwahi" type="text" name="smsphone" class="required"
+                                   value="0049"
+                                   disabled
+                                   placeholder="<?php echo __('z. B. 0049') ?>"/>
+                        </div>
+                        <div class="col-2">
+                            <label class="label" for="ruffnummer">Rufnummer</label>
+                            <input id="ruffnummer" type="text" name="ruffnummer" class="required rufnummer"
+                                   value="<?php echo isset($customerEp1Session['ruffnummer']) ? $customerEp1Session['ruffnummer'] : '' ?>"
+                                   placeholder="<?php echo __('z. B. 01709245568') ?>"/>
+                        </div>
+                    </div>
+
+                    <div class="row-block">
+                        <label class="label" for="smscontent">Benachrichtigung</label>
+                        <textarea id="smscontent" name="smscontent" class="required"><?= isset($customerEp1Session['smscontent']) ? $customerEp1Session['smscontent'] : $this->getDefaultEmailText()?></textarea>
+                        <input type="hidden" id="smscontent_default" value="<?=$this->getDefaultSmsText()?>" />
+                        <input type="hidden" id="emailcontentcontent_default" value="<?=$this->getDefaultEmailText()?>" />
+
+                    </div>
+
+                </div>
+            </div>
+            <?php $step5 = ($block->getIsAuth()) ? 'active' : ''; ?>
+
+            <?php
+            $stepTitle = ' data-virtualPageURL="/order/step4" data-step="4" data-virtualPageTitle="Order Step 4 – gemeinsam freuen" data-button1="GemeinsamFreuenzurückClick" data-button2="GemeinsamFreuenzurückClick"';
+            if ($customer->getData() && $customerData){
+                $stepTitle = ' data-virtualPageURL="/order/step5" data-step="5" data-virtualPageTitle="Order Step  5 – persönliche Daten" data-button1="PersönlicheDatenvorClick" data-button2="PersönlicheDatenzurückClick"';
+            }
+            ?>
+            <div class="tab-container <?= $step5 ?> step5" <?=$stepTitle?>>
+                <div class="tab-content">
+
+                    <?php if ($customer->getData() && $customerData): ?>
+                        <div class="block-title italic primary h1">
+                            <?php echo __('BITTE GIB HIER DEINE PERSÖNLICHEN DATEN EIN') ?>
+                        </div>
+
+                        <div class="row-block select-block">
+                            <div class="col-2">
+                                <input type="radio" id="herr"
+                                       name="gender" <?php echo $customer->getGender() == 1 ? 'checked' : '' ?>
+                                       value="herr"/>
+                                <label for="herr"> Herr</label>
+                            </div>
+                            <div class="col-2">
+                                <input type="radio" id="frau" name="gender"
+                                       value="frau" <?php echo $customer->getGender() == 2 ? 'checked' : '' ?> />
+                                <label for="frau"> Frau</label>
+                            </div>
+                        </div>
+
+                        <div class="row-block">
+                            <div class="col-2">
+                                <label class="label" for="first_name">Vorname*</label>
+                                <input id="first_name" class="required" type="text" name="first_name"
+                                       value="<?php echo $customer->getFirstname() ?>"
+                                       placeholder="<?php echo __('z. B. Stefan') ?>"/>
+
+                            </div>
+                            <div class="col-2">
+                                <label class="label " for="last_name">Nachname*</label>
+                                <input id="last_name" class="required" type="text" name="last_name"
+                                       value="<?php echo $customer->getLastname() ?>"
+                                       placeholder="<?php echo __('z. B. Meier') ?>"/>
+                            </div>
+                        </div>
+
+                        <div class="row-block">
+                            <label class="label" for="company">Firma</label>
+                            <input id="company" type="text" name="address[company]"
+                                   value="<?php echo ($billing) ? $billing->getCompany() : '' ?>"
+                                   placeholder="<?php echo __('z. B. Meier GmbH') ?>"/>
+                        </div>
+
+
+                        <div class="row-block">
+
+                            <label class="label" for="street">Straße*</label>
+                            <?php $street = ($billing) ? $billing->getStreet() : array(0 => ''); ?>
+                            <input id="street" class="required" type="text" name="address[street_address]"
+                                   value="<?php echo $street[0]; ?>"
+                                   placeholder="<?php echo __('z. B. Haupstraße') ?>"/>
+
+                        </div>
+
+                        <div class="row-block">
+
+
+                            <div class="col-2">
+                                <label class="label" for="postal_code">Postleitzahl*</label>
+                                <input id="postal_code" class="required" type="text" name="address[postal_code]"
+                                       value="<?php echo ($billing) ? $billing->getPostcode() : '' ?>"
+                                       placeholder="<?php echo __('z. B. 85386') ?>"/>
+                            </div>
+
+                            <div class="col-2">
+                                <label class="label" for="city">Ort*</label>
+                                <input id="city" class="required" type="text" name="address[city]"
+                                       value="<?php echo ($billing) ? $billing->getCity() : '' ?>"
+                                       placeholder="<?php echo __('z. B. Eching') ?>"/>
+                            </div>
+
+                        </div>
+
+                        <div class="row-block">
+                            <label class="label" for="phone_number">Telefon*</label>
+                            <input id="phone_number" type="text" class="required" name="phone_number"
+                                   value="<?php echo ($billing) ? $billing->getTelephone() : '' ?>"
+                                   placeholder="<?php echo __('z. B. 01709245568') ?>"/>
+                        </div>
+
+                        <input type="hidden" name="email"
+                               value="<?php echo $customerData ? $customerData['customer7pathInfo']->email : '' ?>"/>
+                        <input type="hidden" name="birthdate"
+                               value="<?php echo $customerData ? $customerData['customer7pathInfo']->birthdate : '' ?>"/>
+                        <input type="hidden" name="preferred_language"
+                               value="<?php echo $customerData ? $customerData['customer7pathInfo']->preferred_language : '' ?>"/>
+                        <input type="hidden" name="address[country]" value="DE"/>
+                    <?php else : ?>
+                        <div class="block-title italic primary h1">
+                            <?php echo __('HIER KANNST DU DICH ANMELDEN') ?>
+                        </div>
+                        <div class="path7-login">
+                            <div class="buttons-container">
+                                <button type="button" class="button prev secondary"><span><?php echo __('zurück') ?></span></button>
+                                <a href="/booking/index/auth/action/login/">
+                                    <button type="button" class="button primary">Mit 7Pass einloggen</button>
+                                </a>
+
+
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                </div>
+            </div>
+    </form>
+</div>
+
+
+<div class="buttons-container">
+    <button type="button" class="button prev secondary"><span><?php echo __('zurück') ?></span></button>
+    <button type="button" class="button next primary"><?php echo __('weiter') ?></button>
+    <?php ?>
+</div>
+
+</div>
+
+<div style="display:none" class="debug info"> <?php $block->showSessionData(); ?> </div>
+
+<?php $endDate = date('m/d/Y', strtotime('+1year')); ?>
+
+<script type="text/javascript">
+    requirejs(['jquery', 'jquery/ui', 'interbranche'], function () {
+        var startdate = "<?php echo $startDate; ?>";
+        var enddate = "<?php echo $endDate; ?>";
+        var defaultDate = "<?php echo isset($customerEp1Session['picked_date']) ? $customerEp1Session['picked_date'] : ''?>";
+
+        var priceBlock = jQuery('.price-block');
+        var changePriceSpan = priceBlock.find('label').find('span');
+        var changePriceInput = priceBlock.find('input');
+        var defaultPrice = priceBlock.find('input#calendar_default_price').val();
+
+
+
+        jQuery("#datepicker").datepicker({
+            minDate: startdate,
+            maxDate: enddate,
+            defaultDate: defaultDate,
+//            beforeShowDay: nonWorkingDates,
+            closeText: 'Schließen',
+            prevText: '&#x3C;Zurück',
+            nextText: 'Vor&#x3E;',
+            currentText: 'Heute',
+            monthNames: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
+                'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+            monthNamesShort: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun',
+                'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
+            dayNames: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+            dayNamesShort: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
+            dayNamesMin: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
+            weekHeader: 'KW',
+            firstDay: 1,
+//            dateFormat: 'dd.mm.yy',
+
+            onSelect: function (dateText, inst, extensionRange) {
+
+                dateTextGerman = dateGermanFormat(dateText);
+                console.log(dateTextGerman);
+                jQuery('#datum').val(dateTextGerman);
+                jQuery('.picked_date').val(dateText);
+
+                var ajaxUrl = '/booking/index/CalendarData/';
+                jQuery.ajax({
+
+                        method: "POST",
+                        url: ajaxUrl,
+                        data: {
+                            'day': dateText
+                        }
+                    }
+                ).done(function (data) {
+
+
+                    if (data) {
+
+                        $result = jQuery.parseJSON(data);
+
+                        if ($result.result == false) {
+                            console.log('false');
+                            changePriceSpan.text(defaultPrice);
+                            changePriceInput.val(defaultPrice);
+                            return;
+                        }
+
+                        /**change price**/
+                        if ($result.premium_price  || $result.basis_price) {
+
+                            if (priceBlock.hasClass('premium')) {
+                                changePriceSpan.text($result.premium_price);
+                                changePriceInput.val($result.premium_price);
+                            }
+                            else {
+                                changePriceSpan.text($result.basis_price);
+                                changePriceInput.val($result.basis_price);
+                            }
+                        }
+                        else {
+                            changePriceSpan.text(defaultPrice);
+                            changePriceInput.val(defaultPrice);
+                        }
+
+                        /** update website data **/
+                        if ($result.website_json_data) {
+                            $websites = $result.website_json_data;
+
+                            var websiteHtml = '<div class="website-list">';
+                            var i = 1;
+                            for (var prop in $websites) {
+//                                console.log($websites);
+//                                console.log('rwar1');
+
+                                if (prop) {
+
+                                    var $website = $websites[prop];
+                                    var websiteTitle = prop;
+                                    var websiteVal = websiteTitle + '_' + $website;
+                                    var disabled = '';
+
+                                    if (websiteVal === 'disabled')
+                                        disabled = websiteVal;
+
+                                    websiteHtml +=
+                                        '<div class="website-subpages">'
+                                        + '<input type="radio" required class="website required" id="website' + i + '" name="website" ' + disabled + ' value="' + websiteVal + '">'
+                                        + '<label for="website' + i + '">' + websiteTitle
+                                        + '</label></div>';
+
+                                    if ((i % 4) === 0) {
+                                        websiteHtml += '</div>';
+                                        websiteHtml += '<div style="margin-bottom: 50px" class="website-list">';
+                                    }
+                                    i++;
+
+                                }
+
+                            }
+                            websiteHtml += '</div>';
+                            jQuery('.website-container').html(websiteHtml);
+
+                            console.log($result);
+                        }
+
+                    }
+                });
+            }
+        });
+
+
+//        function showLoader(el){ el.addClass('loader'); }
+//        function hideLoader(el){ el.removeClass('loader'); }
+
+        function nonWorkingDates(date) {
+            var day = date.getDay(), Sunday = 0, Monday = 1, Tuesday = 2, Wednesday = 3, Thursday = 4, Friday = 5,
+                Saturday = 6;
+//            var closedDates = [[9, 23, 2018], [9, 25, 2018]];
+            var closedDates = [];
+//            var closedDays = [[Saturday], [Sunday]];
+
+//            for (var i = 0; i < closedDays.length; i++) {
+//                if (day == closedDays[i][0]) {
+//                    return [false];
+//                }
+//
+//
+//            }
+
+            for (i = 0; i < closedDates.length; i++) {
+                if (date.getMonth() == closedDates[i][0] - 1 &&
+                    date.getDate() == closedDates[i][1] &&
+                    date.getFullYear() == closedDates[i][2]) {
+                    return [false];
+                }
+            }
+
+            return [true];
+        }
+
+
+        var ajaxUrl = '/booking/index/sessiondata/action/store';
+        jQuery('.button.prev.secondary').click(function (e) {
+            pushPreventEvent();
+        });
+
+        jQuery('.button.next.primary').click(function (e) {
+
+            var button = jQuery(this);
+
+            e.preventDefault();
+            showLoader(button);
+
+            if (!validationInputs()) {
+                console.log('some validation error');
+                hideLoader(button);
+                return false;
+            }
+            replaceSmsVars();
+
+            var $finalStep = jQuery('.step5').hasClass('active');
+            if ($finalStep) {
+                console.log('final step');
+
+                var formData = jQuery('.step5 input').serialize();
+                ajaxUrl = '/booking/index/auth/action/update/';
+                jQuery.ajax({
+                    method: "POST",
+                    url: ajaxUrl,
+                    data: {
+                        data: formData
+                    }
+                }).done(function (data) {
+
+                    console.log(data);
+                    location.href = '/booking/index/newcheckout/product/<?= $product->getId()?>';
+
+                    hideLoader(button);
+                }).fail(function ($error) {
+                    console.log($error);
+                    console.log('fail');
+                    hideLoader(button);
+                });
+
+
+                return false;
+            }
+            else{
+
+                var formData = jQuery('#step-container').serialize();
+
+                jQuery.ajax({
+                    method: "POST",
+                    url: ajaxUrl,
+                    data: {
+                        data: formData
+                    }
+
+                }).done(function (data) {
+
+                    if (data) {
+
+                        $result = jQuery.parseJSON(data);
+
+                        if ($result.isBadWord === true) {
+                            jQuery('.product-container.fields > .error').html('Die Eingabe von <strong>' + $result.badWord + '</strong> ist nicht zulässig. Bitte passe deine Eingabe an um fortzufahren.').show();
+                        }
+                        hideLoader(button);
+                    }
+                    else {
+                        current = jQuery('.tabs > li.active');
+                        if (current.next().length === 0) {
+                            return false;
+                        }
+                        jQuery('.step-container > div, .tabs > li').removeClass('active success');
+                        current.next().addClass('active').prevAll().addClass('success');
+                        jQuery('.step-container > div').eq(current.next().index()).addClass('active');
+                        dataLayerProduct();
+                        pushVirtualEventPage();
+                        pushNextEvent();
+                        jQuery('.product-container.fields > .error').hide();
+                        jQuery(window).scrollTop(0);
+                        hideLoader(button);
+
+                    }
+
+                }).fail(function ($error) {
+                    console.log($error);
+                    console.log('fail');
+                    hideLoader(button);
+                });
+
+            }
+        });
+
+        jQuery('.edit-customer-data').click(function () {
+            jQuery('.customer-block input').addClass('edit');
+            jQuery('.customer-block .save-customer-data').show();
+
+        });
+
+
+        function replaceSmsVars(){
+
+
+            var websitesStr = jQuery('input.website:checked').val();
+            var website = websitesStr.split('_');
+            console.log(website);
+            var smsText = jQuery('#smscontent');
+
+            var smsresult = smsText.val().replace('%SENDER%', website[2]);
+            smsresult = smsresult.replace('%SITE%', website[0]);
+            smsText.val(smsresult);
+
+//            console.log(smsresult);
+        }
+
+        /***Update sms Text Var***/
+        jQuery(document).on('click','input.website', function(){
+            if(jQuery('#email').prop('checked') == true) {
+                jQuery('#smscontent').val(jQuery('#emailcontentcontent_default').val());
+            }
+            else if(jQuery('#sms').prop('checked') == true) {
+                jQuery('#smscontent').val(jQuery('#smscontent_default').val());
+            }
+
+
+        });
+
+        jQuery('.website-subpages').click(function () {
+            jQuery('input.subpage').attr('checked', '');
+            jQuery(this).find('.subpage').show().attr('checked', 'checked');
+        });
+
+        jQuery('.path7-login .button.primary').click(function(){
+            showLoader(jQuery(this));
+        });
+
+
+        jQuery('.action.tocart.primary').click(function (e) {
+
+            if (validationInputs()) {
+                return true;
+            }
+            else {
+                console.log('error');
+                return false;
+            }
+        });
+
+        jQuery('#email').click(function () {
+            jQuery('.row-block.sms-row').hide();
+            jQuery('#smscontent').val(jQuery('#emailcontentcontent_default').val());
+            replaceSmsVars();
+            jQuery('.step3 input, .step3 textarea, .step3 select').addClass('required').show().prev('label').show();
+            jQuery('.row-block.email-row').show();
+        });
+        jQuery('#sms').click(function () {
+            jQuery('.row-block.sms-row').show();
+            jQuery('#smscontent').val(jQuery('#smscontent_default').val());
+            replaceSmsVars();
+            jQuery('.step3 input, .step3 textarea, .step3 select').addClass('required').show().prev('label').show();
+            jQuery('.row-block.email-row').hide();
+        });
+        jQuery('#no_email').click(function () {
+            jQuery('.step3 .required:visible, .step3 select:visible').hide().removeClass('error').prev('label').hide();
+        });
+
+        jQuery('.save-customer-data').click(function () {
+            var formData = jQuery('.customer-block input').serialize();
+            console.log('douplicated saving customer');
+            ajaxUrl = '/booking/index/auth/action/update/';
+            jQuery.ajax({
+                    method: "POST",
+                    url: ajaxUrl,
+                    data: {
+                        data: formData
+                    }
+                }
+            );
+
+            validationInputs();
+        });
+
+
+        jQuery(document).ready(function () {
+            dataLayerProductFirst();
+            pushVirtualEventPage();
+        });
+
+        function dataLayerProduct() {
+
+            var elContainer = jQuery('.tab-container.active');
+            var el = jQuery('.dataLayer');
+
+            var step = elContainer.data('step');
+            var products = new Array();
+            var sku = el.data('product-sku');
+            var name = el.data('product-name');
+            var price = el.data('product-price');
+            var attributeSetId = el.data('product-attributesetid');
+            var category = el.data('product-category');
+            var position = el.data('product-position');
+            var path = 'Motive > ' + name;
+
+            products.push({
+                "id": sku,
+                "name": name,
+                "price": price,
+                "attribute_set_id": attributeSetId,
+                "category": category,
+                "position": position,
+                "path": path,
+                "quantity": 1
+            });
+
+            var layerObject = {
+                "event": "checkout",
+                "ecommerce": {
+                    "checkout": {
+                        "actionField": {
+                            "step": step
+                        },
+                        "products": products
+                    }
+
+                }
+
+            };
+
+            window.dataLayer.push(layerObject)
+        }
+
+        function dataLayerProductFirst(){
+
+            var elContainer = jQuery('.tab-container.active');
+            var el = jQuery('.dataLayer');
+
+            var step = elContainer.data('step');
+            var products = new Array();
+            var sku = el.data('product-sku');
+            var name = el.data('product-name');
+            var price = el.data('product-price');
+            var attributeSetId = el.data('product-attributesetid');
+            var category = el.data('product-category');
+            var position = el.data('product-position');
+            var path = 'Motive > ' + name;
+
+            products.push({
+                "id": sku,
+                "name": name,
+                "price": price,
+                "attribute_set_id": attributeSetId,
+                "category": category,
+                "position": position,
+                "path": path,
+                "quantity": 1
+            });
+
+            var layerObject = {
+                "event": "checkout",
+                "ecommerce": {
+                    "checkout": {
+                        "actionField": {
+                            "step": step
+                        },
+                        "products": products
+                    }
+
+                }
+
+            };
+
+            window.dataLayer.push(layerObject);
+        }
+    });
+
+
+    function pushVirtualEventPage(){
+
+        var elContainer = jQuery('.tab-container.active');
+        var virtualPageURL = elContainer.data('virtualpageurl');
+        var virtualPageTitle = elContainer.data('virtualpagetitle');
+
+        var layerObject = {
+            "event": "VirtualPageview",
+            "virtualPageURL": virtualPageURL,
+            "virtualPageTitle": virtualPageTitle
+
+        };
+
+        window.dataLayer.push(layerObject);
+    }
+
+    function pushNextEvent(){
+
+        var el = jQuery('.dataLayer');
+        var elContainer = jQuery('.tab-container.active');
+
+        var step = elContainer.data('step');
+        var category = el.data('product-category');
+        var virtualPageURL = elContainer.data('virtualpageurl');
+        var virtualPageTitle = elContainer.data('virtualpagetitle');
+        var databutton1 = elContainer.data('button1');
+
+        var layerObject = {
+
+            "event": "event",
+            "eventCategory": "Navigation_vorzurück",
+            "eventAction": databutton1,
+            "eventLabel": virtualPageTitle,
+            "eventValue": undefined
+        };
+
+        window.dataLayer.push(layerObject);
+    }
+
+    function pushPreventEvent(){
+
+        var el = jQuery('.dataLayer');
+        var elContainer = jQuery('.tab-container.active');
+
+        var step = elContainer.data('step');
+        var category = el.data('product-category');
+        var virtualPageURL = elContainer.data('virtualpageurl');
+        var virtualPageTitle = elContainer.data('virtualpagetitle');
+        var databutton2 = elContainer.data('button2');
+
+        var layerObject = {
+            "event": "event",
+            "eventCategory": "Navigation_vorzurück",
+            "eventAction": databutton2,
+            "eventLabel": virtualPageTitle,
+            "eventValue": undefined
+        };
+
+        window.dataLayer.push(layerObject);
+    }
+
+    function validateCheckbox(){
+        var $valid = true;
+        var checkboxes = jQuery('input[name="website"].required:visible');
+        checkboxes.each(function(){
+            if(jQuery(this).prop('checked') !== true){
+                checkboxes.next().addClass('error');
+                $valid = false;
+            }
+            else {
+                $valid = true;
+                checkboxes.next().removeClass('error');
+                return false;
+            }
+
+
+        });
+
+        return $valid;
+    }
+
+
+
+    function validationInputs() {
+
+        var valid = true;
+        var validationFields = jQuery('.tab-container.active .required:visible');
+        if (validationFields.length > 0) {
+
+            validationFields.each(function () {
+                el = jQuery(this);
+
+                if(el.hasClass('rufnummer')){
+                    var rufnummer=el.val();
+                    if(rufnummer.slice(0,1)!='0') {
+                        rufnummer = '0' + rufnummer;
+                        el.val(rufnummer);
+                    }
+                }
+
+                if (el.val() == '') {
+                    valid = false;
+                    validationFields.each(function(){
+                        jQuery(this).val()=='' ? jQuery(this).addClass('error') : jQuery(this).removeClass('error');
+                    });
+                    return false;
+                }
+                else {
+                    el.removeClass('error');
+                    valid = true;
+                }
+
+                if(el.hasClass('email')){
+                    if(validateEmail(el.val())){
+                        el.removeClass('error');
+                        valid = true;
+                    }
+                    else{
+                        el.addClass('error');
+                        valid = false;
+                        return false;
+                    }
+                }
+
+            });
+        }
+        if(valid) {
+            valid = validateCheckbox();
+        }
+        return valid;
+    }
+
+    function validateEmail(email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+
+    }
+
+    function dateGermanFormat (date) {
+        var datanew = date.split('/');
+        return datanew[1] + '.' + datanew[0] + '.' + datanew[2];
+    }
+
+    function limitTextarea(textarea, maxLines, maxChar) {
+
+
+
+        var lines = textarea.value.replace(/\r/g, '').split('\n'), lines_removed, char_removed, i;
+        var cursorPosition=textarea.selectionEnd;
+        if (maxLines && lines.length > maxLines) {
+            lines = lines.slice(0, maxLines);
+            lines_removed = 1
+        }
+        if (maxChar) {
+            i = lines.length;
+            while (i-- > 0) {
+                if (lines[i].length > maxChar) {
+                    lines[i] = lines[i].slice(0, maxChar);
+                    if((i+1)<maxLines){
+                        lines[i]+='\r';
+                    }
+                    char_removed = 1;
+                }
+            }
+
+            if (char_removed || lines_removed) {
+                textarea.value = lines.join('\n');
+                textarea.focus();
+                textarea.selectionEnd=cursorPosition;
+            }
+        }
+    }
+
+    require(['jquery','jquery/ui','mage/translate'], function ($) {
+        if (!navigator.cookieEnabled) {
+            alert($.mage.__('Enable cookies for comfortable work with this site.'));
+        }
+
+        var defaultText = '<?= json_encode($this->getDefaultSmsText(true)) ?>';
+        var obj = JSON.parse(defaultText);
+        var smsContent = $('#smscontent');
+        if(defaultText.length > 0 && smsContent !== undefined){
+            //smsContent.val(obj);
+        }
+
+        $('.buttons-container button').on('click touchend', function () {
+            updateDefaultText('date');
+        });
+
+        var smsDate = $('#step-container #datum');
+        smsDate.change(function () {
+            updateDefaultText('date');
+        });
+        smsDate.bind('change input paste', function () {
+            updateDefaultText('date');
+        });
+        var smsTime = $('#step-container #uhrzeit');
+        smsTime.on('change', function () {
+            updateDefaultText('date');
+        });
+
+        var outputText = addNewString(smsContent, 'testtext');
+
+        //smsContent.val(outputText);
+
+        //'12-34-56'.replace("-", ":");
+        function updateDefaultText(elm) {
+            if(elm === 'date'){
+                //console.log('updateDefaultText', elm, smsDate.val(), smsTime.val());
+            }
+        }
+
+        function addNewString(container, newString) {
+            var curValue = $(container).val();
+            return curValue + "\r\n" + newString;
+        }
+    });
+
+
+
+    function getCookie(name) {
+        var matches = document.cookie.match(new RegExp(
+            "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        ));
+        return matches ? decodeURIComponent(matches[1]) : undefined;
+    }
+
+    function setCookie(name, value, options) {
+        options = options || {};
+
+        var expires = options.expires;
+
+        if (typeof expires == "number" && expires) {
+            var d = new Date();
+            d.setTime(d.getTime() + expires * 1000);
+            expires = options.expires = d;
+        }
+        if (expires && expires.toUTCString) {
+            options.expires = expires.toUTCString();
+        }
+
+        value = encodeURIComponent(value);
+
+        var updatedCookie = name + "=" + value;
+
+        for (var propName in options) {
+            updatedCookie += "; " + propName;
+            var propValue = options[propName];
+            if (propValue !== true) {
+                updatedCookie += "=" + propValue;
+            }
+        }
+
+        document.cookie = updatedCookie;
+    }
+
+    function deleteCookie(name) {
+        setCookie(name, "", {
+            expires: -1
+        })
+    }
+</script>
+

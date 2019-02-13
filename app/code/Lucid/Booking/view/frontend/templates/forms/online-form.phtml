@@ -1,0 +1,197 @@
+<?php
+/** @var  $block Lucid\Booking\Block\Forms\Online */
+?>
+<div class="tab-container form" >
+<div class="tab-content step5">
+<div class="block-title italic primary h1">Widerrufsformular </div>
+
+<div class="overflow"></div>
+    <div role="form" lang="de-DE" dir="ltr">
+        <div class="screen-reader-response"></div>
+    <form method="post" id="wideruf" novalidate="novalidate">
+        <?= $block->getBlockHtml('formkey') ?>
+        <div class="widerruf">
+            <p>Wenn Sie den Vertrag widerrufen wollen, dann füllen Sie bitte das nachfolgende Formular aus und senden Sie es uns zu.</p>
+
+            <div class="an">
+                <p> An:<br />
+                    ProSiebenSat.1 Digital GmbH <BR />
+                    Medienallee 4 <br />
+                    85774 Unterföhring
+                </p>
+            </div>
+
+            <div class="row-block">
+                <label class="label" for="deine-widerruf">Widerruf</label>
+                <textarea name="deine-widerruf" id="deine-widerruf" cols="40" rows="5" >Hiermit widerrufe(n) ich/wir (*) den von mir/uns (*) abgeschlossenen Vertrag über die Erbringung der folgenden Dienstleistung (*)</textarea>
+                <h4>(*) Unzutreffendes streichen.</h4>
+            </div>
+
+
+            <div class="row-block">
+                <label class="label" for="bestellt_am">Bestellt am*</label>
+                <input type="date" name="bestellt_am" id="bestellt_am" value="" class="required" />
+            </div>
+
+
+
+            <hr>
+            <h4>Name des/der Verbraucher(s)</h4>
+
+            <div class="row-block select-block">
+                <div class="col-2">
+                    <input type="radio" id="herr"
+                           name="gender"
+                           value="Herr"/>
+                    <label for="herr"> Herr</label>
+                </div>
+                <div class="col-2">
+                    <input type="radio" id="frau" name="gender"
+                           value="Frau" />
+                    <label for="frau"> Frau</label>
+                </div>
+            </div>
+
+            <div class="row-block">
+                <div class="col-2">
+                 <label class="label" for="vorname">Vorname*</label>
+                    <input type="text" name="vorname" id="vorname" value="" class="required" />
+                </div>
+
+                <div class="col-2">
+                    <label class="label" for="nachname">Nachname*</label>
+                    <input type="text" name="nachname" id="nachname" value="" class="required" />
+                </div>
+            </div>
+
+            <div class="row-block">
+                <label class="label" for="firma">Firma</label>
+                <input id="firma" type="text" name="firma"
+                       placeholder="<?php echo __('z. B. Meier GmbH') ?>"/>
+            </div>
+
+            <hr>
+            <h4>Anschrift des/der Verbraucher(s)</h4>
+
+                <div class="row-block">
+                    <label class="label" for="strasse">Straße*</label>
+                    <input type="text" name="strasse" id="strasse" value="" class="required" />
+                </div>
+
+
+            <div class="row-block">
+
+                <div class="col-2">
+                    <label class="label" for="postal_code">Postleitzahl*</label>
+                    <input type="text" name="plz_ort" id="plz_ort" value="" class="required" />
+                </div>
+
+                <div class="col-2">
+                    <label class="label" for="city">Ort*</label>
+                    <input type="text" name="land" id="land" value="" class="required" />
+                </div>
+
+            </div>
+
+
+                <hr>
+                <h4>Deine E-Mail, um den Erhalt des Widerrufs unverzüglich  bestätigen zu können</h4>
+                <div class="row-block">
+                    <label class="label" for="your-email">Ihre E-Mail*</label>
+                    <input type="text" name="your-email" id="your-email" value="" class="required" />
+                </div>
+
+                <hr>
+                <div class="row-block">
+                    <label class="label" for="widerrufsdatum">Datum*</label>
+                    <input type="text" name="dummy-datum" id="widerrufsdatum" value="<?= date('d.m.Y')?>" disabled />
+                    <input type="hidden" name="widerrufsdatum" value="<?= date('d.m.Y')?>" />
+                </div>
+
+                <div class="row-block ">
+                    <input type="checkbox" id="data_privacy" name="data_privacy" class="required" value="1">
+                    <label for="data_privacy"> Meine Daten dürfen verwendet werden, um mich im Zuge meiner Anfrage zu kontaktieren.</label>
+                </div>
+
+            <div class="buttons-container">
+                <p style="color:#333"><?php echo __('Es gelten unsere ') ?><a style="text-decoration:underline" href="/datenschutzbestimmungen" style="display: block; margin: 0 0 10px;" target="_blank"><?php echo __('Datenschutzbestimmungen') ?></a></p>
+                <button type="submit" class="primary button" value="Senden" title="Senden">Senden</button>
+            </div>
+
+        </div>
+
+    </form>
+    </div>
+</div>
+
+</div>
+
+<script type="text/javascript">
+    requirejs(['jquery', 'interbranche'], function ($,inter) {
+
+
+        $('#wideruf').submit(function(e) {
+            console.log('validation enabled');
+            e.stopPropagation();
+            return validateFields();
+
+        });
+
+
+        function validateCheckbox(){
+            console.log('validate checkbox');
+            var $valid = true;
+            var checkboxes = $('.widerruf input[name="data_privacy"].required:visible');
+            checkboxes.each(function(){
+                if(jQuery(this).prop('checked') !== true){
+                    checkboxes.next().addClass('error');
+                    $valid = false;
+                }
+                else {
+                    $valid = true;
+                    checkboxes.next().removeClass('error');
+                    return false;
+                }
+
+
+            });
+
+            return $valid;
+        }
+
+
+
+        function validateFields() {
+
+            var valid = true;
+            var validationFields = jQuery('.widerruf input.required:visible');
+            if (validationFields.length > 0) {
+
+                validationFields.each(function () {
+                    el = $(this);
+
+                    if (el.val() == '') {
+                        valid = false;
+                        validationFields.each(function(){
+                            $(this).val()=='' ? $(this).addClass('error') : $(this).removeClass('error');
+                        });
+                        return false;
+                    }
+                    else {
+                        el.removeClass('error');
+                        valid = true;
+                    }
+
+                });
+            }
+            console.log(valid);
+            if(valid) {
+                valid = validateCheckbox();
+            }
+            return valid;
+        }
+
+
+    });
+
+</script>

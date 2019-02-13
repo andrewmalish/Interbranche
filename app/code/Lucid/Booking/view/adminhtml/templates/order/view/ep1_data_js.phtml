@@ -1,0 +1,972 @@
+<?php
+
+//$step4 = $block->getEp1Modified();
+$step4 = $block->getStep4();
+$orderId = $block->getEp1Data()->getOrderId();
+//var_dump($step4);
+$font = $block->getViewFileUrl('Lucid_Booking::assets/fonts/font2.png');
+
+echo '<div id="ep1Source" style="display:none;">' . $step4->ep1_modified . ' </div>';
+
+?>
+
+
+<script>
+    /******/
+    (function (modules) { // webpackBootstrap
+        /******/ 	// The module cache
+        /******/
+        var installedModules = {};
+        /******/
+        /******/ 	// The require function
+        /******/
+        function __webpack_require__(moduleId) {
+            /******/
+            /******/ 		// Check if module is in cache
+            /******/
+            if (installedModules[moduleId]) {
+                /******/
+                return installedModules[moduleId].exports;
+                /******/
+            }
+            /******/ 		// Create a new module (and put it into the cache)
+            /******/
+            var module = installedModules[moduleId] = {
+                /******/            i: moduleId,
+                /******/            l: false,
+                /******/            exports: {}
+                /******/
+            };
+            /******/
+            /******/ 		// Execute the module function
+            /******/
+            modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+            /******/
+            /******/ 		// Flag the module as loaded
+            /******/
+            module.l = true;
+            /******/
+            /******/ 		// Return the exports of the module
+            /******/
+            return module.exports;
+            /******/
+        }
+
+        /******/
+        /******/
+        /******/ 	// expose the modules object (__webpack_modules__)
+        /******/
+        __webpack_require__.m = modules;
+        /******/
+        /******/ 	// expose the module cache
+        /******/
+        __webpack_require__.c = installedModules;
+        /******/
+        /******/ 	// define getter function for harmony exports
+        /******/
+        __webpack_require__.d = function (exports, name, getter) {
+            /******/
+            if (!__webpack_require__.o(exports, name)) {
+                /******/
+                Object.defineProperty(exports, name, {
+                    /******/                configurable: false,
+                    /******/                enumerable: true,
+                    /******/                get: getter
+                    /******/
+                });
+                /******/
+            }
+            /******/
+        };
+        /******/
+        /******/ 	// define __esModule on exports
+        /******/
+        __webpack_require__.r = function (exports) {
+            /******/
+            Object.defineProperty(exports, '__esModule', {value: true});
+            /******/
+        };
+        /******/
+        /******/ 	// getDefaultExport function for compatibility with non-harmony modules
+        /******/
+        __webpack_require__.n = function (module) {
+            /******/
+            var getter = module && module.__esModule ?
+                    /******/            function getDefault() {
+                    return module['default'];
+                } :
+                    /******/            function getModuleExports() {
+                    return module;
+                };
+            /******/
+            __webpack_require__.d(getter, 'a', getter);
+            /******/
+            return getter;
+            /******/
+        };
+        /******/
+        /******/ 	// Object.prototype.hasOwnProperty.call
+        /******/
+        __webpack_require__.o = function (object, property) {
+            return Object.prototype.hasOwnProperty.call(object, property);
+        };
+        /******/
+        /******/ 	// __webpack_public_path__
+        /******/
+        __webpack_require__.p = "";
+        /******/
+        /******/
+        /******/ 	// Load entry module and return exports
+        /******/
+        return __webpack_require__(__webpack_require__.s = 1);
+        /******/
+    })
+    /************************************************************************/
+    /******/([
+        /* 0 */
+        /***/ (function (module, exports, __webpack_require__) {
+
+            "use strict";
+
+
+            var _createClass = function () {
+                function defineProperties(target, props) {
+                    for (var i = 0; i < props.length; i++) {
+                        var descriptor = props[i];
+                        descriptor.enumerable = descriptor.enumerable || false;
+                        descriptor.configurable = true;
+                        if ("value" in descriptor) descriptor.writable = true;
+                        Object.defineProperty(target, descriptor.key, descriptor);
+                    }
+                }
+
+                return function (Constructor, protoProps, staticProps) {
+                    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+                    if (staticProps) defineProperties(Constructor, staticProps);
+                    return Constructor;
+                };
+            }();
+
+            function _classCallCheck(instance, Constructor) {
+                if (!(instance instanceof Constructor)) {
+                    throw new TypeError("Cannot call a class as a function");
+                }
+            }
+
+            var moduleName = 'teletext_canvas';
+
+
+            /**
+             * Creates a new teletext canvas object.
+             * @param  {string} id Id of the canvas element
+             * @param  {string} font Id of the font image element
+             */
+
+            var TeletextCanvas = function () {
+                function TeletextCanvas(id, font) {
+                    _classCallCheck(this, TeletextCanvas);
+
+                    // font = moduleName + '/assets/fonts/' + (font || 'font2.png');
+                    this.font = document.createElement('img');
+                    this.blink = false;
+                    this.activeState = false;
+                    this.renderData = '';
+
+                    this.font.addEventListener('load', function (e) {
+                        console.log('The font has loaded');
+                    }, false);
+
+                    this.font.setAttribute('src', font);
+                    this.cw = 10;
+                    this.ch = 12;
+                    this.colors = ['#000000', '#ff0000', '#00ff00', '#ffff00', '#0000ff', '#ff00ff', '#00ffff', '#ffffff'];
+
+                    this.canvas = document.getElementById(id);
+
+                    if (!this.canvas) {
+                        throw console.log("Canvas not found with id: " + id);
+                    }
+
+                    this.ctx = this.canvas.getContext('2d');
+                    this.reset();
+                }
+
+                _createClass(TeletextCanvas, [{
+                    key: 'reset',
+
+
+                    /**
+                     * Resets the canvas, so that it is prepared for the next page.
+                     */
+                    value: function reset() {
+                        this.x = 0;
+                        this.y = 0;
+                        this.x_break = 100;
+                        this.y_break = 100;
+                        this.x_start = 0;
+                        this.y_start = 0;
+                        this.bgColor = this.colors[0];
+                        this.fgColor = this.colors[7];
+                        this.modifiedEP1 = '';
+                        this.mosaic = 'none';
+                        this.size = 'normal';
+                        this.holdMosaic = false;
+                        this.heldMosaic = 32; // contains the held mosaic character
+                        // Buffers used to remember attributes
+                        this.bgBuf = [];
+                        this.fgBuf = [];
+                        this.sizeBuf = [];
+                        // Calculated with and height for sized characters
+                        this.sw = this.cw;
+                        this.sh = this.ch;
+                        this.doubleHeight = false;
+                        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                    }
+
+                    /**
+                     * Translates a latin1 char code to x and y offsets for the font*.png fonts.
+                     * @param ch integer
+                     * @returns {___anonymous312_313} x and y offsets of char code
+                     */
+
+                }, {
+                    key: 'latin2font',
+                    value: function latin2font(ch) {
+                        if (ch < 32) console.log("Character not supported " + ch);
+                        if (this.mosaic == 'none') {
+                            console.log('latin2font');
+                            console.log(ch);
+                            switch (ch) {
+                                case 64: // Not supported characters: @[\]`{|}~
+                                case 91:
+                                case 92:
+                                case 93:
+                                case 96:
+                                case 123:
+                                case 124:
+                                case 125:
+                                case 126:
+                                    throw console.log("Character not supported " + ch);
+                                case 167:
+                                    // §
+                                    ch = 64;
+                                    break;
+                                case 176:
+                                    // °
+                                    ch = 96;
+                                    break;
+                                case 196:
+                                    // Ä
+                                    ch = 91;
+                                    break;
+                                case 214:
+                                    // Ö
+                                    ch = 92;
+                                    break;
+                                case 220:
+                                    // Ü
+                                    ch = 93;
+                                    break;
+                                case 223:
+                                    // ß
+                                    ch = 126;
+                                    break;
+                                case 228:
+                                    // ä
+                                    ch = 123;
+                                    break;
+                                case 246:
+                                    // ö
+                                    ch = 124;
+                                    break;
+                                case 252:
+                                    // ü
+                                    ch = 125;
+                                    break;
+                            }
+                            ch -= 32;
+                            if (ch > 127) console.log("Character not supported " + ch);
+                        } else if (this.mosaic == 'contiguous') {
+                            if (32 <= ch && ch <= 63) {
+                                ch += 96;
+                            } else if (96 <= ch && ch <= 127) {
+                                ch += 96;
+                            } else {
+                                ch -= 32;
+                            }
+                        } else if (this.mosaic == 'separated') {
+                            if (32 <= ch && ch <= 63) {
+                                ch += 96;
+                            } else if (96 <= ch && ch <= 127) {
+                                ch += 96;
+                            } else {
+                                ch -= 32;
+                            }
+                        }
+
+                        return {
+                            ch: ch,
+                            x: ch % 32 * this.cw,
+                            y: Math.floor(ch / 32) * this.ch
+                        };
+                    }
+                }, {
+                    key: 'latin2font2',
+
+
+                    /**
+                     * Translates a latin1 char code to x and y offsets for the vtx*.png fonts.
+                     * @param ch integer
+                     * @returns {___anonymous312_313} x and y offsets of char code
+                     */
+                    value: function latin2font2(ch) {
+                        return {
+                            x: ch % 32 * this.cw,
+                            y: Math.floor(ch / 32) * this.ch
+                        };
+                    }
+                }, {
+                    key: 'ttx2font',
+                    value: function ttx2font(ch) {
+                        if (ch < 32) console.log("Character not supported " + ch);
+                        if (this.mosaic == 'none') {
+                            ch -= 32;
+                        } else if (this.mosaic == 'contiguous') {
+                            if (32 <= ch && ch <= 63) {
+                                ch += 96;
+                            } else if (96 <= ch && ch <= 127) {
+                                ch += 96;
+                            } else {
+                                ch -= 32;
+                            }
+                        } else if (this.mosaic == 'separated') {
+                            if (32 <= ch && ch <= 63) {
+                                ch += 64;
+                            } else if (96 <= ch && ch <= 127) {
+                                ch += 64;
+                            } else {
+                                ch -= 32;
+                            }
+                        }
+
+                        return {
+                            ch: ch,
+                            x: ch % 32 * this.cw,
+                            y: Math.floor(ch / 32) * this.ch
+                        };
+                    }
+                }, {
+                    key: 'write',
+
+
+                    /**
+                     * Write text to the teletext page. Up to 1000 characters can be written until the page is full.
+                     * A write to a full page will cause an exception. To write a new page call reset() on this object
+                     * before.
+                     *
+                     * @param   text    string  Teletext data string containing text and attributes.
+                     * @param   text2    string  Teletext data string containing text and attributes.
+                     * @param   tx    string  Teletext data string containing text and attributes.
+                     * @param   ty    string  Teletext data string containing text and attributes.
+                     */
+                    value: function write(text, text2, tx, ty) {
+                        var flash = false;
+
+
+                        tx = parseInt(tx);
+                        ty = parseInt(ty);
+
+                        if (this.y > 24) {
+                            throw "Can't write after page end";
+                        }
+
+
+                        this.x_break += parseInt(tx);
+                        this.x_break--;
+
+                        var resultString = '';
+
+                        var t2len = text2.length;
+                        t2len = parseInt(t2len) + parseInt(tx);
+
+                        var k = 0;
+                        var writetx2 = false;
+
+                        /*console.log(t2len);*/
+                        for (var i = 0; i < text.length; i++) {
+
+                            var c = text.charCodeAt(i);
+                            var ch = void 0;
+                            writetx2 = false;
+
+
+                            var ofs = void 0;
+                            /*    console.log(tx);
+                             console.log(ty);*/
+                            if (ty === this.y) {
+                                if (this.x >= tx && this.x <= t2len) {
+
+
+                                    if (this.x <= this.x_break) {
+
+
+                                        c = text2.charCodeAt(k);
+
+                                        switch (c) {
+                                            case 64: // Not supported characters: @[\]`{|}~
+                                            case 91:
+                                            case 92:
+                                            case 93:
+                                            case 96:
+                                            case 123:
+                                            case 124:
+                                            case 125:
+                                            case 126:
+                                                c = 32;
+                                            case 167:
+                                                // §
+                                                c = 64;
+                                                break;
+                                            case 176:
+                                                // °
+                                                c = 96;
+                                                break;
+                                            case 196:
+                                                // Ä
+                                                c = 91;
+                                                break;
+                                            case 214:
+                                                // Ö
+                                                c = 92;
+                                                break;
+                                            case 220:
+                                                // Ü
+                                                c = 93;
+                                                break;
+                                            case 223:
+                                                // ß
+                                                c = 126;
+                                                break;
+                                            case 228:
+                                                // ä
+                                                c = 123;
+                                                break;
+                                            case 246:
+                                                // ö
+                                                c = 124;
+                                                break;
+                                            case 252:
+                                                // ü
+                                                c = 125;
+                                                break;
+                                        }
+
+
+                                        writetx2 = true;
+                                        ch = void 0;
+                                        k++;
+
+                                        if (c !== 32) {
+                                            if (c === 10) {
+                                                if (this.x === tx) {
+                                                    // continue;
+                                                }
+                                                else {
+                                                    ty++;
+                                                }
+                                            }
+                                        }
+                                        if (this.x === this.x_break && t2len > k) {
+                                            ty++;
+                                        }
+
+                                    }
+                                }
+                            }
+
+                            resultString += String.fromCharCode(c);
+
+
+                            // TODO There are still Set-After attributes here
+                            if (c === 12) {
+                                this.size = 'normal';
+                                this.sw = this.cw;
+                                this.sh = this.ch;
+                                this.heldMosaic = 32;
+                                this.holdMosaic = false;
+                            } else if (c === 13) {
+                                this.size = 'double height';
+                                this.sw = this.cw;
+                                this.sh = 2 * this.ch;
+                                this.heldMosaic = 32;
+                                this.holdMosaic = false;
+                            } else if (c === 14) {
+                                this.size = 'double width';
+                                this.sw = 2 * this.cw;
+                                this.sh = this.ch;
+                                this.heldMosaic = 32;
+                                this.holdMosaic = false;
+                            } else if (c === 15) {
+                                this.size = 'double size';
+                                this.sw = 2 * this.cw;
+                                this.sh = 2 * this.ch;
+                                this.heldMosaic = 32;
+                                this.holdMosaic = false;
+                            } else if (c === 25) {
+                                // Contiguous graphics
+                                this.mosaic = 'contiguous';
+                            } else if (c === 26) {
+                                // Separated graphics
+                                this.mosaic = 'separated';
+                            } else if (c === 28) {
+                                // Set background color to black
+                                this.bgColor = this.colors[0];
+                            } else if (c === 29) {
+                                // Set back- to foreground color
+                                this.bgColor = this.fgColor;
+                            } else if (c === 30) {
+                                // Hold mosaic
+                                this.holdMosaic = true;
+                            } else if (c === 31) {
+                                // Release mosaic
+                                this.holdMosaic = false;
+                            }
+                            // Remember held mosaic character
+                            if (this.mosaic !== 'none' && (32 <= c && c <= 63 || 96 <= c && c <= 127)) {
+                                this.heldMosaic = c;
+                            }
+                            // Change character in hold mosaic mode
+                            if (this.holdMosaic && this.mosaic !== 'none' && 16 <= c && c <= 31) {
+                                ch = this.heldMosaic;
+                            } else {
+                                ch = c;
+                            }
+                            if (writetx2) {
+                                ofs = this.ttx2font(ch);
+                                this.ctx.globalCompositeOperation = 'source-over';
+                                this.ctx.drawImage(this.font, ofs.x, ofs.y, this.cw, this.ch, this.x * this.cw, this.y * this.ch, this.sw, this.sh);
+
+                                this.ctx.globalCompositeOperation = 'destination-over';
+                                this.ctx.fillStyle = this.colors[0];
+                                this.ctx.fillRect(this.x * this.cw, this.y * this.ch, this.sw, this.sh);
+                            }
+                            else {
+                                // Draw a teletext character
+                                if (ch >= 32) {
+
+                                    if (this.sizeBuf[i - 40] !== 'double height' && this.sizeBuf[i - 40] !== 'double size') {
+                                        ofs = this.ttx2font(ch);
+                                        // Draw font image
+                                        this.ctx.globalCompositeOperation = 'source-over';
+                                        this.ctx.drawImage(this.font, ofs.x, ofs.y, this.cw, this.ch, this.x * this.cw, this.y * this.ch, this.sw, this.sh);
+                                        // Draw foreground color
+                                        this.ctx.globalCompositeOperation = 'source-atop';
+                                        this.ctx.fillStyle = this.doubleHeight ? this.fgBuf[i - 40] : this.fgColor;
+                                        this.ctx.fillRect(this.x * this.cw, this.y * this.ch, this.sw, this.sh);
+                                    }
+                                }
+                                // Draw background color
+                                if (this.sizeBuf[i - 40] !== 'double height' && this.sizeBuf[i - 40] !== 'double size') {
+
+                                    this.ctx.globalCompositeOperation = 'destination-over';
+                                    this.ctx.fillStyle = this.doubleHeight ? this.bgBuf[i - 40] : this.bgColor;
+                                    this.ctx.fillRect(this.x * this.cw, this.y * this.ch, this.sw, this.sh);
+                                }
+                            }
+                            // Remember color attributes for double hight
+                            this.bgBuf.push(this.bgColor);
+                            this.fgBuf.push(this.fgColor);
+                            this.sizeBuf.push(this.size);
+                            // Set-After attributes
+                            if (c < 8) {
+                                // Set foreground color
+                                this.fgColor = this.colors[c];
+                                this.mosaic = 'none';
+                                this.heldMosaic = 32;
+                                this.holdMosaic = false;
+                            } else if (16 <= c && c <= 23) {
+                                // Set mosaic foreground color
+                                this.fgColor = this.colors[c - 16];
+                                if (this.mosaic === 'none') this.mosaic = 'contiguous';
+                            }
+                            // Increment cursor position
+                            this.x += 1;
+
+                            if (this.x > 39) {
+                                this.x = 0;
+                                this.y += 1;
+                                this.bgColor = this.colors[0]; // Set background to black
+                                this.fgColor = this.colors[7]; // Set foreground to white
+                                this.mosaic = 'none';
+                                this.heldMosaic = 32;
+                                this.holdMosaic = false;
+                                this.size = 'normal';
+                                this.sw = this.cw;
+                                this.sh = this.ch;
+                                // Check if last line contained a double hight attribute
+                                this.doubleHeight = false;
+                                for (var j = i - 40; j < i; j++) {
+                                    if (text.charCodeAt(j) === 13) {
+                                        // double height
+                                        this.doubleHeight = true;
+                                    }
+                                }
+                            }
+                        }
+                        //     var _this = this;
+                        this.reset();
+                        this.modifiedEP1 = resultString;
+                        this.cleanWrite(resultString);
+
+
+                    }
+                },
+                    {
+                        key: 'cleanWrite',
+
+
+                        /**
+                         * Write text to the teletext page. Up to 1000 characters can be written until the page is full.
+                         * A write to a full page will cause an exception. To write a new page call reset() on this object
+                         * before.
+                         *
+                         * @param  {string} text  Teletext data string containing text and attributes.
+                         */
+                        value: function cleanWrite(text) {
+                            var flash = false;
+
+                            if (this.y > 24) {
+                                throw "Can't write after page end";
+                            }
+
+                            for (var i = 0; i < text.length; i++) {
+                                var c = text.charCodeAt(i);
+                                var ch = void 0;
+                                var ofs = void 0;
+
+                                // Set-At attributes
+                                // TODO There are still Set-After attributes here
+                                if (c === 8) {
+                                    // activate flash state
+                                    flash = true;
+                                } else if (c === 9) {
+                                    // deactivate flash state
+                                    flash = false;
+                                } else if (c == 12) {
+                                    this.size = 'normal';
+                                    this.sw = this.cw;
+                                    this.sh = this.ch;
+                                    this.heldMosaic = 32;
+                                    this.holdMosaic = false;
+                                } else if (c == 13) {
+                                    this.size = 'double height';
+                                    this.sw = this.cw;
+                                    this.sh = 2 * this.ch;
+                                    this.heldMosaic = 32;
+                                    this.holdMosaic = false;
+                                } else if (c == 14) {
+                                    this.size = 'double width';
+                                    this.sw = 2 * this.cw;
+                                    this.sh = this.ch;
+                                    this.heldMosaic = 32;
+                                    this.holdMosaic = false;
+                                } else if (c == 15) {
+                                    this.size = 'double size';
+                                    this.sw = 2 * this.cw;
+                                    this.sh = 2 * this.ch;
+                                    this.heldMosaic = 32;
+                                    this.holdMosaic = false;
+                                } else if (c == 25) {
+                                    // Contiguous graphics
+                                    this.mosaic = 'contiguous';
+                                } else if (c == 26) {
+                                    // Separated graphics
+                                    this.mosaic = 'separated';
+                                } else if (c == 28) {
+                                    // Set background color to black
+                                    this.bgColor = this.colors[0];
+                                } else if (c == 29) {
+                                    // Set back- to foreground color
+                                    this.bgColor = this.fgColor;
+                                } else if (c == 30) {
+                                    // Hold mosaic
+                                    this.holdMosaic = true;
+                                } else if (c == 31) {
+                                    // Release mosaic
+                                    this.holdMosaic = false;
+                                }
+
+                                // Remember held mosaic character
+                                if (this.mosaic !== 'none' && (32 <= c && c <= 63 || 96 <= c && c <= 127)) {
+                                    this.heldMosaic = c;
+                                }
+
+                                // Change character in hold mosaic mode
+                                if (this.holdMosaic && this.mosaic !== 'none' && 16 <= c && c <= 31) {
+                                    ch = this.heldMosaic;
+                                } else {
+                                    ch = c;
+                                }
+
+                                // Draw a teletext character
+                                if (ch >= 32 && !this.checkRefuseRender(flash)) {
+                                    if (this.sizeBuf[i - 40] !== 'double height' && this.sizeBuf[i - 40] !== 'double size') {
+                                        ofs = this.ttx2font(ch);
+                                        //console.log('3434');
+                                        // Draw font image
+                                        this.ctx.globalCompositeOperation = 'source-over';
+                                        // - 0.3 to quickfix chrome's blurry canvas issues
+                                        this.ctx.drawImage(this.font, ofs.x, ofs.y, this.cw, this.ch - 0.3, this.x * this.cw, this.y * this.ch, this.sw, this.sh);
+                                        // Draw foreground color
+                                        this.ctx.globalCompositeOperation = 'source-atop';
+                                        this.ctx.fillStyle = this.doubleHeight ? this.fgBuf[i - 40] : this.fgColor;
+                                        this.ctx.fillRect(this.x * this.cw, this.y * this.ch, this.sw, this.sh);
+                                    }
+                                }
+
+                                // Draw background color
+                                if (this.sizeBuf[i - 40] !== 'double height' && this.sizeBuf[i - 40] !== 'double size') {
+                                    this.ctx.globalCompositeOperation = 'destination-over';
+                                    this.ctx.fillStyle = this.doubleHeight ? this.bgBuf[i - 40] : this.bgColor;
+                                    this.ctx.fillRect(this.x * this.cw, this.y * this.ch, this.sw, this.sh);
+                                }
+
+                                // Remember color attributes for double hight
+                                this.bgBuf.push(this.bgColor);
+                                this.fgBuf.push(this.fgColor);
+                                this.sizeBuf.push(this.size);
+
+                                // Set-After attributes
+                                if (c < 8) {
+                                    // Set foreground color
+                                    this.fgColor = this.colors[c];
+                                    this.mosaic = 'none';
+                                    this.heldMosaic = 32;
+                                    this.holdMosaic = false;
+                                } else if (16 <= c && c <= 23) {
+                                    // Set mosaic foreground color
+                                    this.fgColor = this.colors[c - 16];
+                                    if (this.mosaic === 'none') this.mosaic = 'contiguous';
+                                }
+
+                                // Increment cursor position
+                                this.x += 1;
+                                if (this.x > 39) {
+                                    this.x = 0;
+                                    this.y += 1;
+                                    this.bgColor = this.colors[0]; // Set background to black
+                                    this.fgColor = this.colors[7]; // Set foreground to white
+                                    this.mosaic = 'none';
+                                    this.heldMosaic = 32;
+                                    this.holdMosaic = false;
+                                    this.size = 'normal';
+                                    this.sw = this.cw;
+                                    this.sh = this.ch;
+                                    flash = false;
+
+                                    // Check if last line contained a double hight attribute
+                                    this.doubleHeight = false;
+                                    for (var j = i - 40; j < i; j++) {
+                                        if (text.charCodeAt(j) === 13) {
+                                            // double height
+                                            this.doubleHeight = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        key: 'loadEp1',
+
+
+                        /**
+                         * Load an EP1 file with AJAX, skip the header and footer and write the rest to the canvas.
+                         * Not used for dropdown selection
+                         */
+                        value: function loadEp1(url, cb) {
+                            this.reset();
+                            var towrite = '';
+                            var canvas = this;
+                            var req = new XMLHttpRequest();
+                            //req.setRequestHeader("Connection", "close");
+                            req.onreadystatechange = function () {
+                                // Call a function when the state changes.
+                                if (req.readyState == 4) {
+                                    console.log(req);
+                                    var o = JSON.parse(req.responseText);
+                                    towrite = atob(o.content);
+                                    canvas.cleanWrite(towrite.substring(6, 1006));
+                                    if (typeof cb === 'function') cb();
+                                }
+                            };
+                            req.open('GET', url, true);
+                            req.send(null);
+                        }
+                    }, {
+                        key: 'loadEp1Sample',
+
+
+                        /**
+                         * loads sample EP1 files from demo page
+                         * @param {string} url
+                         */
+                        value: function loadEp1Sample(url, text2, t2x, t2y) {
+                            var _this = this;
+                            var request = new XMLHttpRequest();
+                            var towrite = '';
+                            request.open('GET', url);
+                            request.onload = function () {
+                                towrite = request.response;
+                                return _this.write(towrite.substring(6, 1006), text2, t2x, t2y);
+                                // return _this.cleanWrite(request.response);
+                            };
+                            request.send();
+                        }
+                    }, {
+                        key: 'checkRefuseRender',
+                        value: function checkRefuseRender(flash) {
+                            var refuseRender = this.blink && !this.activeState && flash;
+                            return refuseRender;
+                        }
+
+                        /**
+                         * start the rendering, based on flashing state
+                         */
+
+                    }, {
+                        key: 'initRender',
+                        value: function initRender() {
+                            var _this2 = this;
+
+                            this.reset();
+
+                            if (this.blinkInterval) {
+                                clearInterval(this.blinkInterval);
+                            }
+
+                            this.write(this.renderData);
+
+                            if (this.blink) {
+                                this.blinkInterval = setInterval(function () {
+                                    _this2.reset();
+                                    _this2.activeState = !_this2.activeState;
+                                    _this2.write(_this2.renderData);
+                                }, 500);
+                            }
+                        }
+
+                        /**
+                         * switches the animation/flash state
+                         * @param {boolean} blinkIsActive new state for flashing animation
+                         */
+
+                    },
+                    {
+                        key: 'setCord',
+                        value: function setCord(x, y) {
+                            this.x = parseInt(x);
+                            this.y = parseInt(y);
+                            this.x_start = parseInt(x);
+                        }
+                    },
+                    {
+                        key: 'setBreakCord',
+                        value: function setBreakCord(x, y) {
+                            this.x_break = parseInt(x) + this.x_start;
+                            this.y_break = parseInt(y) + this.y_start;
+
+                        }
+                    }, {
+                        key: 'setBlink',
+                        value: function setBlink(blinkIsActive) {
+                            this.blink = blinkIsActive;
+                            this.activeState = false;
+                            this.initRender();
+                        }
+                    }], [{
+                    key: 'getPrefix',
+                    value: function getPrefix() {
+                        return moduleName;
+                    }
+                }]);
+
+                return TeletextCanvas;
+
+            }();
+
+            module.exports = TeletextCanvas;
+
+            /***/
+        }),
+        /* 1 */
+        /***/
+
+        (function (module, exports, __webpack_require__, jQuery) {
+
+            "use strict";
+
+
+            requirejs(['jquery', 'jquery/ui'], function (jQuery) {
+
+                jQuery(document).ready(function () {
+
+                    /**** writing final ep1 data from session ***/
+                    console.log('test33');
+                    if (jQuery('#converted').length > 0) {
+
+                        /*** determine base ep1 vars ***/
+                        var source = jQuery('#ep1Source').text();
+                        var textimg = '<?php echo $font ?>';
+                        var TeletextCanvas = __webpack_require__(0);
+                        var teletextCanvas = new TeletextCanvas('converted', textimg);
+
+                        /*** write ep1 source image ***/
+                        teletextCanvas.reset();
+                        setTimeout(function () {
+//                            teletextCanvas.write(source, '', 100, 100)
+                            teletextCanvas.cleanWrite(source);
+                            console.log('should be written');
+
+                            var ajaxUrl = '<?= $block->getSaveImageUrl() ?>';
+                            var OrderId = "<?= $orderId ?>";
+                            var imageSrc = document.getElementById('converted').toDataURL();
+
+                            setTimeout(function () {
+                                console.log('sending image to save');
+                                jQuery.ajax({
+                                    method: "POST",
+                                    url: ajaxUrl,
+                                    data: {
+                                        canvas_image: imageSrc,
+                                        order_id: OrderId
+                                        // canvas_image_name: canvasImageName
+                                    }
+
+                                }).done(function (data1) {
+                                    console.log(data1);
+                                    data1 = jQuery.parseJSON(data1);
+                                    if (data1.epchanged) {
+                                        console.log('imageSaved');
+                                    }
+                                    else {
+                                        console.log('some error found');
+                                    }
+                                });
+
+                            }, 300);
+
+
+                        }, 300);
+
+                    }
+
+                });
+
+            });
+
+            /***/
+        }),
+        /******/])
+
+</script>

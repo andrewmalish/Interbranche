@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+
+    </head>
+    <body>
+        <referenceContainer name="content">
+            <referenceBlock name="breadcrumbs" remove="true" />
+            <referenceBlock name="product.info.main" remove="true" />
+            <referenceBlock name="product.info.media" remove="true" />
+            <referenceBlock name="product.info.details" remove="true" />
+            <block class="Lucid\Booking\Block\Index\Produkt" name="html.produсt" as="html_produсt" template="Lucid_Booking::index/index.phtml" cacheable="false"/>
+            <!-- block class="Lucid\Booking\Block\Html\Product" name="lucid.product" template="Lucid_Booking::html/product.phtml">
+                <block class="Lucid\Booking\Block\Html\Product" name="product.step1" as="product_step_1" template="Lucid_Booking::html/steps/step1.phtml"/>
+                <block class="Lucid\Booking\Block\Html\Calendar" name="product.step2" as="product_step_2" template="Lucid_Booking::html/steps/step2.phtml"/>
+                <block class="Lucid\Booking\Block\Html\Product" name="product.step3" as="product_step_3" template="Lucid_Booking::html/steps/step3.phtml"/>
+                <block class="Lucid\Booking\Block\Html\Product" name="product.step4" as="product_step_4" template="Lucid_Booking::html/steps/step4.phtml"/>
+            </block -->
+
+        </referenceContainer>
+    </body>
+</page>

@@ -1,0 +1,662 @@
+<?xml version="1.0" ?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+	<argument name="data" xsi:type="array">
+		<item name="js_config" xsi:type="array">
+			<item name="provider" xsi:type="string">lucid_booking_calendar_form.calendar_form_data_source</item>
+			<item name="deps" xsi:type="string">lucid_booking_calendar_form.calendar_form_data_source</item>
+		</item>
+		<item name="label" translate="true" xsi:type="string">General Information</item>
+		<item name="config" xsi:type="array">
+			<item name="dataScope" xsi:type="string">data</item>
+			<item name="namespace" xsi:type="string">lucid_booking_calendar_form</item>
+		</item>
+		<item name="template" xsi:type="string">templates/form/collapsible</item>
+		<item name="buttons" xsi:type="array">
+			<item name="back" xsi:type="string">Lucid\Booking\Block\Adminhtml\Calendar\Edit\BackButton</item>
+			<item name="delete" xsi:type="string">Lucid\Booking\Block\Adminhtml\Calendar\Edit\DeleteButton</item>
+			<item name="save" xsi:type="string">Lucid\Booking\Block\Adminhtml\Calendar\Edit\SaveButton</item>
+			<item name="save_and_continue" xsi:type="string">Lucid\Booking\Block\Adminhtml\Calendar\Edit\SaveAndContinueButton</item>
+		</item>
+	</argument>
+	<dataSource name="calendar_form_data_source">
+		<argument name="dataProvider" xsi:type="configurableObject">
+			<argument name="class" xsi:type="string">Lucid\Booking\Model\Calendar\DataProvider</argument>
+			<argument name="name" xsi:type="string">calendar_form_data_source</argument>
+			<argument name="primaryFieldName" xsi:type="string">id</argument>
+			<argument name="requestFieldName" xsi:type="string">id</argument>
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="submit_url" path="*/*/save" xsi:type="url"/>
+				</item>
+			</argument>
+		</argument>
+		<argument name="data" xsi:type="array">
+			<item name="js_config" xsi:type="array">
+				<item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
+			</item>
+		</argument>
+		<argument name="data" xsi:type="array">
+			<item name="js_config" xsi:type="array">
+				<item name="component" xsi:type="string">Lucid_Booking/js/custom-fields</item>
+			</item>
+		</argument>
+	</dataSource>
+
+	<fieldset name="General">
+		<argument name="data" xsi:type="array">
+			<item name="config" xsi:type="array">
+				<item name="label" xsi:type="string" translate="true">Edit Calendar</item>
+			</item>
+		</argument>
+		<field name="Price1">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">text</item>
+					<item name="label" translate="true" xsi:type="string">Price1</item>
+					<item name="formElement" xsi:type="string">input</item>
+					<item name="source" xsi:type="string">Calendar</item>
+					<item name="sortOrder" xsi:type="number">110</item>
+					<item name="dataScope" xsi:type="string">Price1</item>
+					<item name="validation" xsi:type="array">
+						<item name="required-entry" xsi:type="boolean">false</item>
+					</item>
+				</item>
+			</argument>
+		</field>
+		<field name="Price2">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">text</item>
+					<item name="label" translate="true" xsi:type="string">Price2</item>
+					<item name="formElement" xsi:type="string">input</item>
+					<item name="source" xsi:type="string">Calendar</item>
+					<item name="sortOrder" xsi:type="number">120</item>
+					<item name="dataScope" xsi:type="string">Price2</item>
+					<item name="validation" xsi:type="array">
+						<item name="required-entry" xsi:type="boolean">false</item>
+					</item>
+				</item>
+			</argument>
+		</field>
+		<field name="Level">
+
+			<argument name="data" xsi:type="array">
+				<item name="options" xsi:type="array">
+			 		<item name="1" xsi:type="array">
+						<item name="value" xsi:type="string">Level One</item>
+						<item name="label" xsi:type="string" translate="true">Level One</item>
+					</item>
+
+				</item>
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">select</item>
+					<item name="label" translate="true" xsi:type="string">Level</item>
+					<item name="formElement" xsi:type="string">select</item>
+					<item name="source" xsi:type="string">Calendar</item>
+					<item name="sortOrder" xsi:type="number">130</item>
+					<item name="dataScope" xsi:type="string">Level</item>
+					<item name="validation" xsi:type="array">
+						<item name="required-entry" xsi:type="boolean">false</item>
+					</item>
+				</item>
+			</argument>
+		</field>
+		<field name="Days">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">text</item>
+					<item name="label" translate="true" xsi:type="string">Start Day</item>
+					<item name="formElement" xsi:type="string">date</item>
+					<item name="source" xsi:type="string">Calendar</item>
+					<item name="sortOrder" xsi:type="number">140</item>
+					<item name="dataScope" xsi:type="string">Days</item>
+					<item name="validation" xsi:type="array">
+						<item name="required-entry" xsi:type="boolean">false</item>
+					</item>
+					<item name="options" xsi:type="array">
+						<item name="dateFormat" xsi:type="string">dd/MM/yyyy</item>
+						<item name="range" xsi:type="string">period</item>
+					</item>
+				</item>
+			</argument>
+		</field>
+
+	</fieldset>
+
+	<fieldset name="website1">
+		<settings>
+			<collapsible>true</collapsible>
+			<label translate="true">Website 1</label>
+		</settings>
+
+		<field name="website_active">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">boolean</item>
+					<item name="label" translate="true" xsi:type="string">Disable website?</item>
+					<item name="formElement" xsi:type="string">checkbox</item>
+					<item name="prefer" xsi:type="string">toggle</item>
+					<item name="valueMap" xsi:type="array">
+						<item name="true" xsi:type="string">1</item>
+						<item name="false" xsi:type="string">0</item>
+					</item>
+					<item name="source" xsi:type="string">Calendar</item>
+					<item name="dataScope" xsi:type="string">website_active</item>
+					<item name="default" xsi:type="string">0</item>
+					<item name="sortOrder" xsi:type="number">140</item>
+					<item name="validation" xsi:type="array">
+						<item name="required-entry" xsi:type="boolean">false</item>
+					</item>
+				</item>
+			</argument>
+		</field>
+		<field name="Website">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">text</item>
+					<item name="formElement" xsi:type="string">input</item>
+					<item name="source" xsi:type="string">Calendar</item>
+					<item name="dataScope" xsi:type="string">Website</item>
+					<item name="validation" xsi:type="array">
+						<item name="required-entry" xsi:type="boolean">false</item>
+					</item>
+				</item>
+			</argument>
+			<settings>
+				<label translate="true">Website</label>
+				<imports>
+					<link name="disabled">ns = ${ $.ns }, index = website_active:checked</link>
+				</imports>
+			</settings>
+		</field>
+
+
+
+		<field name="subcategory_active11">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">boolean</item>
+					<item name="label" translate="true" xsi:type="string">Disable subcategory 1?</item>
+					<item name="formElement" xsi:type="string">checkbox</item>
+					<item name="prefer" xsi:type="string">toggle</item>
+					<item name="valueMap" xsi:type="array">
+						<item name="true" xsi:type="string">1</item>
+						<item name="false" xsi:type="string">0</item>
+					</item>
+					<item name="default" xsi:type="string">0</item>
+					<item name="source" xsi:type="string">Calendar</item>
+
+					<item name="dataScope" xsi:type="string">subcategory_active11</item>
+					<item name="validation" xsi:type="array">
+						<item name="required-entry" xsi:type="boolean">false</item>
+					</item>
+				</item>
+			</argument>
+		</field>
+
+		<field name="subcategory11">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">text</item>
+					<item name="label" translate="true" xsi:type="string">Subcategory 1</item>
+					<item name="formElement" xsi:type="string">input</item>
+					<item name="source" xsi:type="string">Calendar</item>
+					<item name="dataScope" xsi:type="string">subcategory11</item>
+					<item name="validation" xsi:type="array">
+						<item name="required-entry" xsi:type="boolean">false</item>
+					</item>
+				</item>
+			</argument>
+			<settings>
+				<imports>
+					<link name="disabled">ns = ${ $.ns }, index = subcategory_active11:checked</link>
+				</imports>
+			</settings>
+		</field>
+
+	<field name="subcategory_active12">
+		<argument name="data" xsi:type="array">
+			<item name="config" xsi:type="array">
+				<item name="dataType" xsi:type="string">boolean</item>
+				<item name="label" translate="true" xsi:type="string">Disable subcategory 2?</item>
+				<item name="formElement" xsi:type="string">checkbox</item>
+				<item name="prefer" xsi:type="string">toggle</item>
+				<item name="valueMap" xsi:type="array">
+					<item name="true" xsi:type="string">1</item>
+					<item name="false" xsi:type="string">0</item>
+				</item>
+				<item name="default" xsi:type="string">0</item>
+				<item name="source" xsi:type="string">Calendar</item>
+				<item name="dataScope" xsi:type="string">subcategory_active12</item>
+
+				<item name="validation" xsi:type="array">
+					<item name="required-entry" xsi:type="boolean">false</item>
+				</item>
+			</item>
+		</argument>
+	</field>
+
+	<field name="subcategory12">
+		<argument name="data" xsi:type="array">
+			<item name="config" xsi:type="array">
+				<item name="dataType" xsi:type="string">text</item>
+				<item name="label" translate="true" xsi:type="string">Subcategory 2</item>
+				<item name="formElement" xsi:type="string">input</item>
+				<item name="source" xsi:type="string">Calendar</item>
+				<item name="dataScope" xsi:type="string">subcategory12</item>
+				<item name="validation" xsi:type="array">
+					<item name="required-entry" xsi:type="boolean">false</item>
+				</item>
+			</item>
+		</argument>
+		<settings>
+			<imports>
+				<link name="disabled">ns = ${ $.ns }, index = subcategory_active12:checked</link>
+			</imports>
+		</settings>
+	</field>
+</fieldset>
+
+
+	<fieldset name="website2">
+		<settings>
+			<collapsible>true</collapsible>
+			<label translate="true">Website 2</label>
+		</settings>
+
+		<field name="website_active2">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">boolean</item>
+					<item name="label" translate="true" xsi:type="string">Disable website?</item>
+					<item name="formElement" xsi:type="string">checkbox</item>
+					<item name="prefer" xsi:type="string">toggle</item>
+					<item name="valueMap" xsi:type="array">
+						<item name="true" xsi:type="string">1</item>
+						<item name="false" xsi:type="string">0</item>
+					</item>
+					<item name="source" xsi:type="string">Calendar</item>
+					<item name="dataScope" xsi:type="string">website_active2</item>
+					<item name="default" xsi:type="string">0</item>
+					<item name="sortOrder" xsi:type="number">140</item>
+					<item name="validation" xsi:type="array">
+						<item name="required-entry" xsi:type="boolean">false</item>
+					</item>
+				</item>
+			</argument>
+		</field>
+		<field name="Website2">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">text</item>
+					<item name="formElement" xsi:type="string">input</item>
+					<item name="source" xsi:type="string">Calendar</item>
+					<item name="dataScope" xsi:type="string">Website2</item>
+					<item name="validation" xsi:type="array">
+						<item name="required-entry" xsi:type="boolean">false</item>
+					</item>
+				</item>
+			</argument>
+			<settings>
+				<label translate="true">Website</label>
+				<imports>
+					<link name="disabled">ns = ${ $.ns }, index = website_active2:checked</link>
+				</imports>
+			</settings>
+		</field>
+
+
+
+		<field name="subcategory_active21">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">boolean</item>
+					<item name="label" translate="true" xsi:type="string">Disable subcategory 1?</item>
+					<item name="formElement" xsi:type="string">checkbox</item>
+					<item name="prefer" xsi:type="string">toggle</item>
+					<item name="valueMap" xsi:type="array">
+						<item name="true" xsi:type="string">1</item>
+						<item name="false" xsi:type="string">0</item>
+					</item>
+					<item name="default" xsi:type="string">0</item>
+					<item name="source" xsi:type="string">Calendar</item>
+
+					<item name="dataScope" xsi:type="string">subcategory_active21</item>
+					<item name="validation" xsi:type="array">
+						<item name="required-entry" xsi:type="boolean">false</item>
+					</item>
+				</item>
+			</argument>
+		</field>
+
+		<field name="subcategory21">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">text</item>
+					<item name="label" translate="true" xsi:type="string">Subcategory 1</item>
+					<item name="formElement" xsi:type="string">input</item>
+					<item name="source" xsi:type="string">Calendar</item>
+					<item name="dataScope" xsi:type="string">subcategory21</item>
+					<item name="validation" xsi:type="array">
+						<item name="required-entry" xsi:type="boolean">false</item>
+					</item>
+				</item>
+			</argument>
+			<settings>
+				<imports>
+					<link name="disabled">ns = ${ $.ns }, index = subcategory_active21:checked</link>
+				</imports>
+			</settings>
+		</field>
+
+		<field name="subcategory_active22">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">boolean</item>
+					<item name="label" translate="true" xsi:type="string">Disable subcategory 2?</item>
+					<item name="formElement" xsi:type="string">checkbox</item>
+					<item name="prefer" xsi:type="string">toggle</item>
+					<item name="valueMap" xsi:type="array">
+						<item name="true" xsi:type="string">1</item>
+						<item name="false" xsi:type="string">0</item>
+					</item>
+					<item name="default" xsi:type="string">0</item>
+					<item name="source" xsi:type="string">Calendar</item>
+					<item name="dataScope" xsi:type="string">subcategory_active22</item>
+
+					<item name="validation" xsi:type="array">
+						<item name="required-entry" xsi:type="boolean">false</item>
+					</item>
+				</item>
+			</argument>
+		</field>
+
+		<field name="subcategory22">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">text</item>
+					<item name="label" translate="true" xsi:type="string">Subcategory 2</item>
+					<item name="formElement" xsi:type="string">input</item>
+					<item name="source" xsi:type="string">Calendar</item>
+					<item name="dataScope" xsi:type="string">subcategory22</item>
+					<item name="validation" xsi:type="array">
+						<item name="required-entry" xsi:type="boolean">false</item>
+					</item>
+				</item>
+			</argument>
+			<settings>
+				<imports>
+					<link name="disabled">ns = ${ $.ns }, index = subcategory_active22:checked</link>
+				</imports>
+			</settings>
+		</field>
+	</fieldset>
+
+	<fieldset name="website3">
+		<settings>
+			<collapsible>true</collapsible>
+			<label translate="true">Website 3</label>
+		</settings>
+
+		<field name="website_active3">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">boolean</item>
+					<item name="label" translate="true" xsi:type="string">Disable website?</item>
+					<item name="formElement" xsi:type="string">checkbox</item>
+					<item name="prefer" xsi:type="string">toggle</item>
+					<item name="valueMap" xsi:type="array">
+						<item name="true" xsi:type="string">1</item>
+						<item name="false" xsi:type="string">0</item>
+					</item>
+					<item name="source" xsi:type="string">Calendar</item>
+					<item name="dataScope" xsi:type="string">website_active3</item>
+					<item name="default" xsi:type="string">0</item>
+					<item name="sortOrder" xsi:type="number">140</item>
+					<item name="validation" xsi:type="array">
+						<item name="required-entry" xsi:type="boolean">false</item>
+					</item>
+				</item>
+			</argument>
+		</field>
+		<field name="Website3">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">text</item>
+					<item name="formElement" xsi:type="string">input</item>
+					<item name="source" xsi:type="string">Calendar</item>
+					<item name="dataScope" xsi:type="string">Website3</item>
+					<item name="validation" xsi:type="array">
+						<item name="required-entry" xsi:type="boolean">false</item>
+					</item>
+				</item>
+			</argument>
+			<settings>
+				<label translate="true">Website</label>
+				<imports>
+					<link name="disabled">ns = ${ $.ns }, index = website_active3:checked</link>
+				</imports>
+			</settings>
+		</field>
+
+
+
+		<field name="subcategory_active31">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">boolean</item>
+					<item name="label" translate="true" xsi:type="string">Disable subcategory 1?</item>
+					<item name="formElement" xsi:type="string">checkbox</item>
+					<item name="prefer" xsi:type="string">toggle</item>
+					<item name="valueMap" xsi:type="array">
+						<item name="true" xsi:type="string">1</item>
+						<item name="false" xsi:type="string">0</item>
+					</item>
+					<item name="default" xsi:type="string">0</item>
+					<item name="source" xsi:type="string">Calendar</item>
+
+					<item name="dataScope" xsi:type="string">subcategory_active31</item>
+					<item name="validation" xsi:type="array">
+						<item name="required-entry" xsi:type="boolean">false</item>
+					</item>
+				</item>
+			</argument>
+		</field>
+
+		<field name="subcategory31">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">text</item>
+					<item name="label" translate="true" xsi:type="string">Subcategory 1</item>
+					<item name="formElement" xsi:type="string">input</item>
+					<item name="source" xsi:type="string">Calendar</item>
+					<item name="dataScope" xsi:type="string">subcategory31</item>
+					<item name="validation" xsi:type="array">
+						<item name="required-entry" xsi:type="boolean">false</item>
+					</item>
+				</item>
+			</argument>
+			<settings>
+				<imports>
+					<link name="disabled">ns = ${ $.ns }, index = subcategory_active31:checked</link>
+				</imports>
+			</settings>
+		</field>
+
+		<field name="subcategory_active32">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">boolean</item>
+					<item name="label" translate="true" xsi:type="string">Disable subcategory 2?</item>
+					<item name="formElement" xsi:type="string">checkbox</item>
+					<item name="prefer" xsi:type="string">toggle</item>
+					<item name="valueMap" xsi:type="array">
+						<item name="true" xsi:type="string">1</item>
+						<item name="false" xsi:type="string">0</item>
+					</item>
+					<item name="default" xsi:type="string">0</item>
+					<item name="source" xsi:type="string">Calendar</item>
+					<item name="dataScope" xsi:type="string">subcategory_active32</item>
+
+					<item name="validation" xsi:type="array">
+						<item name="required-entry" xsi:type="boolean">false</item>
+					</item>
+				</item>
+			</argument>
+		</field>
+
+		<field name="subcategory32">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">text</item>
+					<item name="label" translate="true" xsi:type="string">Subcategory 2</item>
+					<item name="formElement" xsi:type="string">input</item>
+					<item name="source" xsi:type="string">Calendar</item>
+					<item name="dataScope" xsi:type="string">subcategory32</item>
+					<item name="validation" xsi:type="array">
+						<item name="required-entry" xsi:type="boolean">false</item>
+					</item>
+				</item>
+			</argument>
+			<settings>
+				<imports>
+					<link name="disabled">ns = ${ $.ns }, index = subcategory_active32:checked</link>
+				</imports>
+			</settings>
+		</field>
+	</fieldset>
+
+	<fieldset name="website4">
+		<settings>
+			<collapsible>true</collapsible>
+			<label translate="true">Website 4</label>
+		</settings>
+
+		<field name="website_active4">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">boolean</item>
+					<item name="label" translate="true" xsi:type="string">Disable website?</item>
+					<item name="formElement" xsi:type="string">checkbox</item>
+					<item name="prefer" xsi:type="string">toggle</item>
+					<item name="valueMap" xsi:type="array">
+						<item name="true" xsi:type="string">1</item>
+						<item name="false" xsi:type="string">0</item>
+					</item>
+					<item name="source" xsi:type="string">Calendar</item>
+					<item name="dataScope" xsi:type="string">website_active4</item>
+					<item name="default" xsi:type="string">0</item>
+					<item name="sortOrder" xsi:type="number">140</item>
+					<item name="validation" xsi:type="array">
+						<item name="required-entry" xsi:type="boolean">false</item>
+					</item>
+				</item>
+			</argument>
+		</field>
+		<field name="Website4">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">text</item>
+					<item name="formElement" xsi:type="string">input</item>
+					<item name="source" xsi:type="string">Calendar</item>
+					<item name="dataScope" xsi:type="string">Website4</item>
+					<item name="validation" xsi:type="array">
+						<item name="required-entry" xsi:type="boolean">false</item>
+					</item>
+				</item>
+			</argument>
+			<settings>
+				<label translate="true">Website</label>
+				<imports>
+					<link name="disabled">ns = ${ $.ns }, index = website_active4:checked</link>
+				</imports>
+			</settings>
+		</field>
+
+
+
+		<field name="subcategory_active41">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">boolean</item>
+					<item name="label" translate="true" xsi:type="string">Disable subcategory 1?</item>
+					<item name="formElement" xsi:type="string">checkbox</item>
+					<item name="prefer" xsi:type="string">toggle</item>
+					<item name="valueMap" xsi:type="array">
+						<item name="true" xsi:type="string">1</item>
+						<item name="false" xsi:type="string">0</item>
+					</item>
+					<item name="default" xsi:type="string">0</item>
+					<item name="source" xsi:type="string">Calendar</item>
+
+					<item name="dataScope" xsi:type="string">subcategory_active41</item>
+					<item name="validation" xsi:type="array">
+						<item name="required-entry" xsi:type="boolean">false</item>
+					</item>
+				</item>
+			</argument>
+		</field>
+
+		<field name="subcategory41">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">text</item>
+					<item name="label" translate="true" xsi:type="string">Subcategory 1</item>
+					<item name="formElement" xsi:type="string">input</item>
+					<item name="source" xsi:type="string">Calendar</item>
+					<item name="dataScope" xsi:type="string">subcategory41</item>
+					<item name="validation" xsi:type="array">
+						<item name="required-entry" xsi:type="boolean">false</item>
+					</item>
+				</item>
+			</argument>
+			<settings>
+				<imports>
+					<link name="disabled">ns = ${ $.ns }, index = subcategory_active41:checked</link>
+				</imports>
+			</settings>
+		</field>
+
+		<field name="subcategory_active42">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">boolean</item>
+					<item name="label" translate="true" xsi:type="string">Disable subcategory 2?</item>
+					<item name="formElement" xsi:type="string">checkbox</item>
+					<item name="prefer" xsi:type="string">toggle</item>
+					<item name="valueMap" xsi:type="array">
+						<item name="true" xsi:type="string">1</item>
+						<item name="false" xsi:type="string">0</item>
+					</item>
+					<item name="default" xsi:type="string">0</item>
+					<item name="source" xsi:type="string">Calendar</item>
+					<item name="dataScope" xsi:type="string">subcategory_active42</item>
+
+					<item name="validation" xsi:type="array">
+						<item name="required-entry" xsi:type="boolean">false</item>
+					</item>
+				</item>
+			</argument>
+		</field>
+
+		<field name="subcategory42">
+			<argument name="data" xsi:type="array">
+				<item name="config" xsi:type="array">
+					<item name="dataType" xsi:type="string">text</item>
+					<item name="label" translate="true" xsi:type="string">Subcategory 2</item>
+					<item name="formElement" xsi:type="string">input</item>
+					<item name="source" xsi:type="string">Calendar</item>
+					<item name="dataScope" xsi:type="string">subcategory42</item>
+					<item name="validation" xsi:type="array">
+						<item name="required-entry" xsi:type="boolean">false</item>
+					</item>
+				</item>
+			</argument>
+			<settings>
+				<imports>
+					<link name="disabled">ns = ${ $.ns }, index = subcategory_active42:checked</link>
+				</imports>
+			</settings>
+		</field>
+	</fieldset>
+</form>

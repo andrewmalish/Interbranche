@@ -1,0 +1,174 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: andrew
+ * Date: 14.06.18
+ * Time: 0:25
+ */
+
+$websites = $block->getDynamicWebsites();
+?>
+<fieldset class="websites-fieldset">
+    <?php
+    if ($websites):
+        foreach ($websites as $website): ?>
+
+            <div class="websites">
+
+                <h5>Website</h5>
+
+                <label>Enable?
+                    <input name="website_enable" class="website_enable" <?= ($website->isActive) ? 'checked' : '' ?>
+                           type="checkbox" value="1"/>
+                </label>
+                <label>Website Name
+                    <input name="website" class="website" type="text" value=" <?= trim($website->title); ?>"/>
+                </label>
+
+                <label>Podcast Name
+                    <input name="podcast" class="podcast" type="text" value=" <?php echo trim($website->podcast); ?>"/>
+                </label>
+                <span class="delete"> x </span>
+                <hr>
+
+                <?php if ($website->subpages):
+                    ?>
+                    <h4>Subpages</h4>
+
+                    <?php
+                    foreach ($website->subpages as $subpage):
+//                        $subpageTitle = ($subpage->isActive) ? trim($subpage->title) : '';
+
+                        ?>
+                        <div class="subpages">
+
+
+                            <label>Enable?
+                                <input name="subpage_enable"
+                                       class="subpage_enable" <?= ($subpage->isActive) ? 'checked' : '' ?>
+                                       type="checkbox" value="1"/>
+                            </label>
+                            <label>Subpage
+                                <input name="subpage" class="subpage" type="text"
+                                       value="<?= trim($subpage->title) ?>"/>
+                            </label>
+                            <span class="delete"> x </span>
+                        </div>
+                        <?php
+
+
+                    endforeach;
+
+                    ?>
+
+                    <?php
+                else:
+                    ?>
+
+
+                    <div class="subpages">
+                        <h4>Subpages</h4>
+                        <label>On\off
+                            <input name="subpage_enable" class="subpage_enable" type="checkbox" value="1"/>
+                        </label>
+                        <label>Subpage
+                            <input name="subpage" class="subpage" type="text" value=""/>
+                        </label>
+                        <span class="delete"> x </span>
+                    </div>
+                    <?php
+                endif;
+                ?>
+                <button class="add_subpage" onclick="newSubpage(this)">Add subpage</button>
+
+                <?php if ($website->subpages):
+                    ?>
+                    <br /><br />
+                    <h4>Subpages Range</h4>
+
+                    <?php
+                    foreach ($website->subpages_range as $subpageRange):
+//                        $subpageTitle = ($subpage->isActive) ? trim($subpage->title) : '';
+
+                        ?>
+
+                        <div class="subpages-range">
+                            <label>Enable? <input name="subpage_range_from_enable" class="subpage_range_from_enable"
+                                                  type="checkbox" <?= ($subpageRange->isActive) ? 'checked' : '' ?>
+                                                  value="1"/> </label>
+                            <label>Subpage from <input name="subpage_range_from" class="subpage" type="text"
+                                                       value="<?= trim($subpageRange->subpageFrom) ?>"/> </label>
+                            <label>Subpage to <input name="subpage_range_to" class="subpage" type="text"
+                                                     value="<?= trim($subpageRange->subpageTo) ?>"/> </label>
+                            <span class="delete"> x </span>
+                        </div>
+
+                        <?php
+
+
+                    endforeach;
+
+                    ?>
+
+                    <?php
+                else:
+                    ?>
+
+                    <div class="subpages-range">
+                        <label>Enable? <input name="subpage_range_from_enable" class="subpage_range_from_enable"
+                                              type="checkbox" checked value="1"/> </label>
+                        <label>Subpage from <input name="subpage_range_from" class="subpage" type="text" value=""/>
+                        </label>
+                        <label>Subpage to <input name="subpage_range_to" class="subpage" type="text" value=""/> </label>
+                        <span class="delete"> x </span>
+                    </div>
+                    <?php
+                endif;
+                ?>
+                <button class="add_subpage_range" onclick="newSubpagesRange(this)">Add subpages range</button>
+            </div>
+
+        <?php endforeach;
+
+    else:
+        ?>
+
+
+        <div class="websites">
+
+            <h5>Website</h5>
+
+            <label>Enable?
+                <input name="website_enable" class="website_enable" type="checkbox" value="1"/>
+            </label>
+            <label>Website Name
+                <input name="website" class="website" type="text" value=""/>
+            </label>
+            <label>Podcast Name
+                <input name="podcast" class="podcast" type="text" value=""/>
+            </label>
+            <span class="delete"> x </span>
+            <hr>
+            <div class="subpages">
+                <h4>Subpages</h4>
+                <label>Enable?
+                    <input name="subpage_enable" class="subpage_enable" type="checkbox" value="1"/>
+                </label>
+                <label>Subpage
+                    <input name="subpage" class="subpage" type="text" value=""/>
+                </label>
+                <span class="delete"> x </span>
+            </div>
+            <button class="add_subpage" onclick="newSubpage(this)">Add subpage</button>
+            <button class="add_subpage_range" onclick="newSubpagesRange(this)">Add subpages range</button>
+
+        </div>
+
+        <?php
+    endif;
+    ?>
+</fieldset>
+
+<button class="add_website">Add website</button>
+
+

@@ -1,0 +1,310 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+$startDate = date('d-m-Y');
+$endDate = date('d\m\Y', strtotime('+1year'));
+
+$readyDays = $block->getCalendarDays();
+
+?>
+
+<script>
+
+    requirejs(['jquery', 'jquery/ui'], function (jQuery) {
+        jQuery(function () {
+
+
+            var add_website         = jQuery('.add_website');
+            var updateDaySettings   = jQuery('#updateDaySettings');
+            var add_subpage         = jQuery('.add_subpage');
+            var website_container   = jQuery('.websites-fieldset');
+            var deleteBtn  = jQuery('.delete');
+
+            var ajaxUrl = '<?=$block->getCalendarSaveDataUrl()?>';
+
+            var day = jQuery('input[name="date_field"]');
+            var basis_price = jQuery('input[name="basis_price"]');
+            var premium_price = jQuery('input[name="premium_price"]');
+            var day_enable = jQuery('input[name="day_enable"]');
+
+            var dates = [<?php echo $readyDays ?>];
+
+
+
+            function _init(){
+
+                runDatapicker();
+
+                add_website.click(function () {
+                    addWebsite();
+                    updateWebsiteJson();
+                });
+
+                deleteBtn.click(function(){
+                    var confirmText = "Are you sure you want to delete this object?";
+                    if(confirm(confirmText)){
+                        jQuery(this).parent().remove();
+                        updateWebsiteJson();
+                    }
+
+                });
+
+                updateDaySettings.click(function() {
+                   saveDayAjax();
+                });
+            }
+
+
+            function runDatapicker() {
+                var startdate = "<?php echo $startDate; ?>";
+
+                jQuery("#datepicker_custom").datepicker({
+                    minDate: startdate,
+                    beforeShowDay: highlightDays,
+                    closeText: 'Schließen',
+                    prevText: '&#x3C;Zurück',
+                    nextText: 'Vor&#x3E;',
+                    currentText: 'Heute',
+                    monthNames: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
+                        'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+                    monthNamesShort: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun',
+                        'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
+                    dayNames: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+                    dayNamesShort: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
+                    dayNamesMin: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
+                    weekHeader: 'KW',
+                    dateFormat: 'dd-mm-yy',
+
+                    onSelect: function (dateText, inst, extensionRange) {
+                        jQuery('body').loader('show');
+                        jQuery('input[name="date_field"]').val(dateText);
+                        jQuery.ajax({
+
+                                method: "POST",
+                                url: ajaxUrl,
+                                data: {
+                                    'day': dateText
+                                }
+                            }
+                        ).done(function (data) {
+
+                            if (data) {
+                               var $result = jQuery.parseJSON(data);
+                               console.log($result.is_disabled);
+                               console.log($result.basis_price);
+                               console.log($result.premium_price);
+                               console.log($result);
+
+                               if($result.result == 'no day found') {
+                                   console.log('result false');
+                                   day_enable.prop('checked', false).attr('checked', false);
+                                   basis_price.val('');
+                                   premium_price.val('');
+                               }
+                               else {
+                                   console.log('result true');
+                                   if ($result.is_disabled == 1) {
+                                       day_enable.attr('checked', true);
+                                   }
+                                   else {
+                                       day_enable.prop('checked', false).attr('checked', false);
+                                   }
+                                   basis_price.val($result.basis_price);
+                                   premium_price.val($result.premium_price);
+                               }
+                            }
+                            jQuery('body').loader('hide');
+                        });
+                    }
+
+                });
+
+            }
+
+
+            function saveDayAjax () {
+
+                jQuery('body').loader('show');
+                jQuery.ajax({
+                        method: "POST",
+                        url: ajaxUrl,
+                        data: {
+                            'action':'saveday',
+                            'day': day.val(),
+                            'day_enable': day_enable.prop( "checked" ),
+                            'basis_price': basis_price.val(),
+                            'premium_price': premium_price.val()
+                        }
+                    }
+                ).done(function (data) {
+
+                    if (data) {
+                        $result = jQuery.parseJSON(data);
+                        console.log($result);
+                        jQuery('body').loader('hide');
+                    }
+                });
+
+            }
+
+            function highlightDays(date) {
+                for (var i = 0; i < dates.length; i++) {
+                    if (new Date(dates[i]).toString() == date.toString()) {
+                        return [true, 'highlight'];
+                    }
+                }
+                return [true, ''];
+
+            }
+
+            function updateWebsiteJson() {
+
+                var jsonStringObj = {};
+                jQuery('.websites').each(function () {
+                    var el = jQuery(this).index();
+                    var webIsActive = jQuery(this).find('input[name="website_enable"]').prop( "checked" );
+                    var websiteName = jQuery(this).find('input[name="website"]').val();
+                    var podcastName = jQuery(this).find('input[name="podcast"]').val();
+                    var subpages = {};
+                    var subpages_range = {};
+
+                    jQuery(this).find('.subpages').each(function () {
+                        var page_el = jQuery(this).index();
+                        var pageIsActive = jQuery(this).find('input[name="subpage_enable"]').prop( "checked" );
+                        var pageName = jQuery(this).find('input[name="subpage"]').val();
+
+                        subpages[page_el] = {
+                            isActive: pageIsActive,
+                            title: pageName
+                        }
+
+                    });
+
+
+
+                    jQuery(this).find('.subpages-range').each(function () {
+                        var sub_page_el = jQuery(this).index();
+                        var subpageRangeIsActive = jQuery(this).find('input[name="subpage_range_from_enable"]').prop( "checked" );
+                        var subpageFrom = jQuery(this).find('input[name="subpage_range_from"]').val();
+                        var subpageTo = jQuery(this).find('input[name="subpage_range_to"]').val();
+
+                        subpages_range[sub_page_el] = {
+                            isActive: subpageRangeIsActive,
+                            subpageFrom: subpageFrom,
+                            subpageTo: subpageTo
+                        }
+
+                    });
+
+                    console.log(subpages_range);
+
+
+                    jsonStringObj[el] = {
+                        isActive: webIsActive,
+                        title: websiteName,
+                        podcast: podcastName,
+                        subpages: subpages,
+                        subpages_range: subpages_range
+                    }
+
+                });
+
+
+               var readyjsonData = JSON.stringify(jsonStringObj);
+
+                jQuery.ajax({
+                    url: '<?php echo $block->getSaveUrl() ?>',
+                    type: 'POST',
+                    data: {
+                        websites_json: readyjsonData,
+                        id: '<?php echo $block->getCalendarId() ?>'
+                    },
+                }).done(function(data) {
+                });
+
+
+            }
+
+            function debounce(func, wait, immediate) {
+                var timeout;
+                return function() {
+                    var context = this, args = arguments;
+                    var later = function() {
+                        timeout = null;
+                        if (!immediate) func.apply(context, args);
+                    };
+                    var callNow = immediate && !timeout;
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                    if (callNow) func.apply(context, args);
+                };
+            };
+
+// Использование
+
+            function addWebsite() {
+
+                var websiteHtmlEmpty = '<div class="websites">' +
+                    '<h5>Website</h5>' +
+                    '<label>Enable? <input name="website_enable" class="website_enable" type="checkbox" checked value="1" /></label>' +
+                    '<label>Website Name <input name="website" class="website" type="text" value="" /></label>' +
+                    '<label>Podcast Name <input name="podcast" class="podcast" type="text" value="" /></label>' +
+                    '<span class="delete"> x </span>'+
+                    '<hr>' +
+                    '<div class="subpages">' +
+                    '<label>Enable? <input name="subpage_enable" class="subpage_enable" type="checkbox" checked value="1" /> </label>' +
+                    '<label>Subpage <input name="subpage" class="subpage" type="text" value="" /> </label> ' +
+                    '<span class="delete"> x </span>'+
+                    '</div> <button class="add_subpage" onclick="newSubpage(this)">Add subpage</button>' +
+                    '<button class="add_subpage_range" onclick="newSubpagesRange(this)">Add subpages range</button>' +
+                    ' </div>';
+
+
+
+                website_container.append(websiteHtmlEmpty);
+            }
+
+            jQuery(document).ready(function () {
+
+                _init();
+                jQuery(window).click(function() {
+//                    debounce(function() {
+                        updateWebsiteJson();
+                        console.log('refill field')
+//                    }, 100);
+
+                });
+
+                jQuery('input').click(function(event){
+                    event.stopPropagation();
+                });
+
+            });
+
+
+        });
+    });
+
+    function newSubpage(button){
+        var subpageHtml =   '<div class="subpages">' +
+            '<label>Enable? <input name="subpage_enable" class="subpage_enable" type="checkbox" checked value="1" /> </label>' +
+            '<label>Subpage <input name="subpage" class="subpage" type="text" value="" /> </label> ' +
+            '<span class="delete"> x </span>'+
+            '</div>';
+        jQuery(button).before(subpageHtml);
+    }
+    function newSubpagesRange(button){
+        var subpageHtml =   '<div class="subpages-range">' +
+            '<label>Enable? <input name="subpage_range_from_enable" class="subpage_range_from_enable" type="checkbox" checked value="1" /> </label>' +
+            '<label>Subpage from <input name="subpage_range_from" class="subpage" type="text" value="" /> </label> ' +
+            '<label>Subpage to <input name="subpage_range_to" class="subpage" type="text" value="" /> </label> ' +
+            '<span class="delete"> x </span>'+
+            '</div>';
+        jQuery(button).before(subpageHtml);
+    }
+</script>

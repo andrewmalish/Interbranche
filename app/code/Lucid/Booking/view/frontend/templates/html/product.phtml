@@ -1,0 +1,39 @@
+<?php $_product = $block->getProduct(); ?>
+<div class="booking">
+	<ul class="tabs">
+		<li class="tab active"><?php echo __('1. Motiv wählen')?></li>
+		<li class="tab"><?php echo __('2. Gruß buchen')?></li>
+		<li class="tab"><?php echo __('3. Empfänger informieren')?></li>
+		<li class="tab"><?php echo __('4. Gemeinsam freuen!')?></li>
+	</ul>
+
+	<div class='step-container'>
+		<div class="tab-container active">
+			<?php if ($product_step_1 = $block->getChildBlock('product_step_1')): ?>
+				<?= $product_step_1->setProduct($_product)->getChildHtml() ?>
+			<?php endif; ?>
+		</div>
+		<div class="tab-container">
+			<?php if ($product_step_2 = $block->getChildBlock('product_step_2')): ?>
+				<?= $product_step_2->getChildHtml() ?>
+			<?php endif; ?>
+		</div>
+		<div class="tab-container">
+			<?php if ($product_step_3 = $block->getChildBlock('product_step_3')): ?>
+				<?= $product_step_3->getChildHtml() ?>
+			<?php endif; ?>
+		</div>
+		<div class="tab-container">
+			<?php if ($product_step_4 = $block->getChildBlock('product_step_4')): ?>
+				<?= $product_step_4->getChildHtml() ?>
+			<?php endif; ?>
+		</div>
+	</div>
+
+	<div class="buttons-container">
+		<button class="button prev secondary"><span><?php echo __('zurück') ?></span></button>
+		<button class="button next primary"><?php echo __('weiter') ?></button>
+	</div>
+
+</div>
+

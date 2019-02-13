@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+	<body>
+		<referenceContainer name="content">
+			<block class="Lucid\Booking\Block\Index\Index" name="index.index" template="Lucid_Booking::index/index.phtml"/>
+			<block as="html_calendar" class="Lucid\Booking\Block\Html\Calendar" name="html.calendar" template="Lucid_Booking::html/calendar.phtml"/>
+		</referenceContainer>
+	</body>
+</page>

@@ -1,0 +1,54 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+	<preference for="Magento\Catalog\Block\Product\View" type="Lucid\Booking\Block\Html\LucidProduct"/>
+	<preference for="Lucid\Booking\Api\ProduktRepositoryInterface" type="Lucid\Booking\Model\ProduktRepository"/>
+	<preference for="Lucid\Booking\Api\Data\ProduktInterface" type="Lucid\Booking\Model\Produkt"/>
+	<preference for="Lucid\Booking\Api\Data\ProduktSearchResultsInterface" type="Magento\Framework\Api\SearchResults"/>
+	<preference for="Lucid\Booking\Api\Data\Ep1StepsSessionInterface" type="Lucid\Booking\Model\Ep1StepsSession"/>
+	<preference for="Magento\Catalog\Controller\Adminhtml\Product\NewAction" type="Lucid\Booking\Controller\Adminhtml\Catalog\Product\OnlyVirtualProduct" />
+	<virtualType name="Lucid\Booking\Model\ResourceModel\Produkt\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+		<arguments>
+			<argument name="mainTable" xsi:type="string">lucid_booking_produkt</argument>
+			<argument name="resourceModel" xsi:type="string">Lucid\Booking\Model\ResourceModel\Produkt\Collection</argument>
+		</arguments>
+	</virtualType>
+	<type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+		<arguments>
+			<argument name="collections" xsi:type="array">
+				<item name="lucid_booking_produkt_grid_data_source" xsi:type="string">Lucid\Booking\Model\ResourceModel\Produkt\Grid\Collection</item>
+				<item name="lucid_booking_calendar_grid_data_source" xsi:type="string">Lucid\Booking\Model\ResourceModel\Calendar\Grid\Collection</item>
+				<item name="lucid_booked_website_grid_data_source" xsi:type="string">Lucid\Booking\Model\ResourceModel\LucidBookedWebsite\Grid\Collection</item>
+			</argument>
+		</arguments>
+	</type>
+	<type name="Magento\Checkout\Block\Checkout\LayoutProcessor">
+		<plugin name="vendor_assign_default_value" type="Lucid\Booking\Plugin\Checkout\Model\Checkout\LayoutProcessor" sortOrder="100"/>
+	</type>
+	<type name="Magento\Checkout\Controller\Cart\Add">
+		<plugin name="Redirect_To_Checkout" type="Lucid\Booking\Plugin\Controller\Cart\Add" sortOrder="1"/>
+	</type>
+
+	<type name="Magento\Checkout\Controller\Cart\Index">
+		<plugin name="Redirect_To_Last_Step" type="Lucid\Booking\Plugin\Controller\Cart\Index" sortOrder="1"/>
+	</type>
+	<virtualType name="Lucid\Booking\Model\ResourceModel\Calendar\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+		<arguments>
+			<argument name="mainTable" xsi:type="string">lucid_booking_calendar</argument>
+			<argument name="resourceModel" xsi:type="string">Lucid\Booking\Model\ResourceModel\Calendar\Collection</argument>
+		</arguments>
+	</virtualType>
+	<virtualType name="Lucid\Booking\Model\ResourceModel\LucidBookedWebsite\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+		<arguments>
+			<argument name="mainTable" xsi:type="string">lucid_booked_websites</argument>
+			<argument name="resourceModel" xsi:type="string">Lucid\Booking\Model\ResourceModel\LucidBookedWebsite\Collection</argument>
+		</arguments>
+	</virtualType>
+
+	<!--<type name="Magento\Quote\Model\Quote">-->
+		<!--<plugin-->
+				<!--name="Lucid_Booking_quoteplugin"-->
+				<!--type="Lucid\Booking\Plugin\QuotePlugin"-->
+				<!--sortOrder="999"/>-->
+
+	<!--</type>-->
+</config>

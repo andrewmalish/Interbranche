@@ -1,0 +1,37 @@
+{
+    "name": "lucid/module-booking",
+    "description": "",
+    "type": "magento2-module",
+    "license": "proprietary",
+    "authors": [
+        {
+            "email": "andrewmalish@gmail.com",
+            "name": "Andrew"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.5.0",
+        "guzzlehttp/guzzle": "~6.0",
+        "lib-curl": "*",
+        "ext-curl": "*",
+        "tedivm/stash": "0.14.*",
+        "phpseclib/phpseclib": "0.3.*",
+        "firebase/php-jwt": "~3.0"
+    },
+    "require-dev": {
+        "php-vcr/php-vcr": "1.2.8",
+        "php-vcr/phpunit-testlistener-vcr": "~1.1",
+        "phpunit/phpunit": "4.8.*",
+        "munkie/phpunit-teamcity-testlistener": "dev-master#94bd42157940c305a8f02c3d8b0574e8529e1404"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lucid\\Booking\\": ""
+        },
+
+        "files": [
+            "registration.php"
+        ]
+    }
+}

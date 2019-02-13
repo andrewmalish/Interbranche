@@ -1,0 +1,67 @@
+<?php
+$calendar = $block->getCalendar();
+$websites = $block->getDynamicWebsites();
+?>
+<div class="block-title italic primary h1">
+	<?php echo __('BITTE GIB HIER DEINE BUCHUNGSDETAILS AN:')?>
+</div>
+
+<p>verfügbar pakete wählen </p>
+<label><input type="radio" name="price" checked value="<?php echo $calendar->getPrice1(); ?>"/> 1 Tag
+	- <?php echo $calendar->getPrice1(); ?>€</label>
+<label><input type="radio" name="price" value="<?php echo $calendar->getPrice2(); ?>"/> 2 Tage
+	- <?php echo $calendar->getPrice2(); ?>€</label>
+
+<p>Date in <?php echo date('M') ?> </p>
+<div id="datepicker"></div>
+
+
+<p>verfügbar wählen</p>
+<ul>
+
+    <?php if($websites):
+
+        foreach($websites as $website):
+
+            if($website->isActive):
+
+
+    ?>
+
+            <li><input type="checkbox" name="website_"><?php echo $website->title ?>
+
+                <?php
+
+                if($website->subpages):
+
+                foreach($website->subpages as $subpage):
+                    if($subpage->isActive): ?>
+                        <span><?php echo $subpage->title ?></span>
+                <?php
+                    endif;
+                endforeach;
+                endif;
+
+                ?>
+
+            </li>
+
+    <?php
+        endif;
+        endforeach;
+
+    endif;
+    ?>
+</ul>
+
+<script type="text/javascript">
+  requirejs(['lucid', 'jquery', 'jquery/ui'], function (lucid) {
+    var startdate = <?php echo $calendar->getDays()?>;
+    jQuery("#datepicker").datepicker({
+      minDate: startdate,
+      onSelect: function (dateText, inst, extensionRange) {
+        console.log(dateText);
+      }
+    });
+  });
+</script>
