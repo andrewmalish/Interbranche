@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @package     Interbranche\QuickView
+ * @version     1.0.0
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="2columns-left" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="mage/gallery/gallery.css"/>
+    </head>
+    <body>
+        <referenceContainer name="before.body.end">
+            <block class="Interbranche\QuickView\Block\Initialize" name="quickview.initialize" template="Interbranche_QuickView::initialize.phtml" />
+        </referenceContainer>
+    </body>
+</page>

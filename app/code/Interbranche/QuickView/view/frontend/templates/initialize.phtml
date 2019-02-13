@@ -1,0 +1,60 @@
+<?php
+/*
+ * @package     Interbranche\QuickView
+ * @version     1.0.0
+ */
+
+/** @var $block \Interbranche\QuickView\Block\Initialize */
+?>
+<div id="quick-view" data-container="product-quick-view"
+     data-mage-init='{"quickview": [{"baseUrl": "<?php echo $block->getConfig('baseUrl'); ?>"}]}' >
+    <script data-template="quick-view-block" type="text/x-magento-template">
+        <div class="quick-view-wrap">
+            <div class="close" data-role="quick-view-close">&#xd7</div>
+            <div class="product attribute sku">
+                <strong class="type""><?php echo __('SKU'); ?></strong>
+                <div class="value" itemprop="sku"><%- data.sku %></div>
+            </div>
+            <div data-role="product-media" class="product media">
+                <% if (data.badge) { %>
+                    <div class="swap-badge product-badge <%- data.badge.foreground %> <%- data.badge.background %>" ">
+                        <%- data.badge.label %>
+                    </div>
+                <% } %>
+            </div>
+            <div class="product-info-main">
+                <div class="page-title-wrapper product">
+                    <h1 class="page-title"><%- data.name %></h1>
+                </div>
+                <div class="more-details">
+                    <a href="<%- data.productLink %>">
+                        <?php echo __("VIEW MORE DETAILS"); ?>
+                    </a>
+                </div>
+                <div class="product-envelopes-attribute"><%- data.unit_description %></div>
+                <% if (data.uom && data.uom != 'N/A' && data.uom != 'No') { %>
+                    <span class="perbox">
+                        <% if (data.hasSpecialPrice == true) { %>
+                            <span class="uom-tag special-price">&nbsp;/&nbsp;<%- data.uom %></span>
+                        <% } else { %>
+                            <span class="uom-tag">&nbsp;/&nbsp;<%- data.uom %></span>
+                        <% } %>
+                    </span>
+                <% } %>
+                <div class="product-add-form">
+                    <?php $postParams = $block->getAddToCartPostParams($_product); ?>
+                    <form id="product_addtocart_form"
+                          action="<%- data.addToCartUrl %>"
+                          data-role="tocart-form"
+                          data-product-sku="<%- data.sku %>"
+                          method="post">
+                        <input type="hidden" name="product" value="<%- data.entity_id %>" />
+                        <input type="hidden" name="selected_configurable_option" value="" />
+                        <input type="hidden" name="related_product" id="related-products-field" value="" />
+                        <div data-role="options-wrapper"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </script>
+</div>
